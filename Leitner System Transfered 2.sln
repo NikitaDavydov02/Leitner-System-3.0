@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33027.164
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leitner System Transfered 2", "Leitner System Transfered 2\Leitner System Transfered 2.csproj", "{73C39480-8178-4204-BD77-2FDA96EA7620}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73C39480-8178-4204-BD77-2FDA96EA7620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73C39480-8178-4204-BD77-2FDA96EA7620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73C39480-8178-4204-BD77-2FDA96EA7620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73C39480-8178-4204-BD77-2FDA96EA7620}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DCE287D7-05F3-4315-BD0F-D3E163CCBFAF}
+	EndGlobalSection
+EndGlobal

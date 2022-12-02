@@ -1,0 +1,212 @@
+﻿<Page x:Class="Leitner_System_Transfered_2.View.StartPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Leitner_System_Transfered_2.View"
+      xmlns:view="clr-namespace:Leitner_System_Transfered_2.View"
+      xmlns:viewmodel="clr-namespace:Leitner_System_Transfered_2.ViewModel"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="StartPage">
+
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="visibilityConverter"/>
+        <viewmodel:BooleanNotConverter x:Key="notConverter"/>
+        <viewmodel:IntegerToVisibilityConverter x:Key="integerToVisibilityConverter"/>
+    </Page.Resources>
+    <Page.CommandBindings>
+        <CommandBinding x:Name="Copy" Command="ApplicationCommands.Copy" CanExecute="Copy_CanExecute" Executed="Copy_Executed"/>
+        <CommandBinding x:Name="Paste" Command="ApplicationCommands.Paste" CanExecute="Paste_CanExecute" Executed="Paste_Executed" />
+        <CommandBinding x:Name="Delete" Command="ApplicationCommands.Delete" CanExecute="Delete_CanExecute" Executed="Delete_Executed"/>
+        <CommandBinding x:Name="New" Command="ApplicationCommands.New" CanExecute="New_CanExecute" Executed="New_Executed"/>
+        <CommandBinding x:Name="Open" Command="ApplicationCommands.Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
+        <CommandBinding x:Name="Save" Command="ApplicationCommands.Save" CanExecute="Save_CanExecute" Executed="Save_Executed"/>
+    </Page.CommandBindings>
+
+    <Grid MinWidth="600" MinHeight="350">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0" Grid.Row="0" Background="#FF52504E" Grid.RowSpan="5" Width="Auto"/>
+        <Grid Grid.Row="0" Grid.Column="0">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="settingsButton" HorizontalAlignment="Left" Margin="10" MaxWidth="50" Grid.Column="0" Style="{DynamicResource WhiteButtonWithText}" Width="Auto" Height="Auto" Click="settingsButton_Click" MouseEnter="settingsButton_MouseEnter" MouseLeave="settingsButton_MouseLeave">
+                    <Image x:Name="settingsButtonImage"/>
+                </Button>
+
+                <Button x:Name="helpButton" HorizontalAlignment="Left" Margin="10" MaxWidth="50" Grid.Column="0" Style="{DynamicResource WhiteButtonWithText}" Width="Auto" Height="Auto" Click="helpButton_Click" MouseLeave="helpButton_MouseLeave" MouseEnter="helpButton_MouseEnter">
+                    <Hyperlink>
+                        <Image x:Name="helpButtonImage"/>
+                    </Hyperlink>
+                </Button>
+            </StackPanel>
+
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch">
+            <!--<Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="33*"/>
+                <ColumnDefinition Width="67*"/>
+            </Grid.ColumnDefinitions>-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Button x:Name="SelectAll" Margin="15 2" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Content="Choose all" Click="SelectAll_Click" Style="{DynamicResource WhiteButtonWithText}" IsEnabled="{Binding Decks.Count, Converter={StaticResource integerToVisibilityConverter}}"/>
+            <ComboBox x:Name="ReverseSetting" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" Margin="15 2" Style="{DynamicResource ComboBoxStyle1}" SelectionChanged="ReverseSetting_SelectionChanged" SelectedIndex="0" Grid.ColumnSpan="2">
+                <ComboBoxItem Content="Straight" FontSize="8" Style="{DynamicResource ComboBoxItemStyle1}"/>
+                <ComboBoxItem Content="Reverse" Style="{DynamicResource ComboBoxItemStyle1}"/>
+                <ComboBoxItem Content="Random" FontSize="8"  Style="{DynamicResource ComboBoxItemStyle1}"/>
+                <ComboBoxItem Content="Manual" FontSize="8"  Style="{DynamicResource ComboBoxItemStyle1}"/>
+            </ComboBox>
+        </Grid>
+        <ScrollViewer x:Name="deckScrollViewer" Grid.Column="0" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15" LostFocus="deckScrollViewer_LostFocus" GotFocus="deckScrollViewer_GotFocus" PreviewMouseWheel="deckScrollViewer_PreviewMouseWheel" Foreground="Black" Template="{DynamicResource ScrollViewerControlTemplate1}">
+            <ListView x:Name="decksList" ItemsSource="{Binding Decks, Mode=OneWay}" SelectionChanged="decksList_SelectionChanged" Background="White" GotFocus="decksList_GotFocus" LostFocus="decksList_LostFocus" Style="{DynamicResource ListViewStyle1}" ItemContainerStyle="{DynamicResource ListViewItemStyle1}">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="grid" Height="25" Background="Transparent" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="150"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem x:Name="Copy" Command="ApplicationCommands.Copy"/>
+                                    <MenuItem x:Name="Past" Command="ApplicationCommands.Paste"/>
+                                    <MenuItem x:Name="Delete" Command="ApplicationCommands.Delete"/>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+                            <CheckBox x:Name="SelectiontoTraining" Style="{DynamicResource CheckBoxStyle1}" IsChecked="{Binding DeckIsSelectedForTraining, Mode=TwoWay}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="20" MinHeight="20" Width="20" Height="13"/>
+
+                            <TextBlock Text="{Binding DeckName}" Grid.Row="0" Grid.Column="1" Margin="10 0"/>
+                            <TextBlock Text="{Binding Count}" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Margin="10 0"/>
+                            <ComboBox x:Name="ReverseSetting" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="3" Margin="15 2" Style="{DynamicResource ComboBoxStyle1}" SelectionChanged="ReverseSetting_SelectionChanged" SelectedIndex="{Binding ReverseSetting}" IsEnabled="{Binding  ReverseSettingChangingEnable}" Grid.ColumnSpan="2">
+                                <ComboBoxItem Content="Straight" FontSize="8" Style="{DynamicResource ComboBoxItemStyle1}"/>
+                                <ComboBoxItem Content="Reverse" Style="{DynamicResource ComboBoxItemStyle1}"/>
+                                <ComboBoxItem Content="Random" FontSize="8"  Style="{DynamicResource ComboBoxItemStyle1}"/>
+                                <ComboBoxItem Content="Manual" FontSize="8"  Style="{DynamicResource ComboBoxItemStyle1}"/>
+                            </ComboBox>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollViewer>
+        <Grid Margin="0" Grid.Row="3" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="chooseFolderButton" Margin="10" Grid.Column="0" Style="{DynamicResource WhiteButtonWithText}" Click="chooseFolderButton_Click" MouseEnter="chooseFolderButton_MouseEnter" MouseLeave="chooseFolderButton_MouseLeave">
+                <Image  x:Name="chooseFolderButtonImage"/>
+            </Button>
+            <Button x:Name="newDeckButton" Margin="10" Grid.Column="1" Style="{DynamicResource WhiteButtonWithText}" Click="newDeckButton_Click" MouseEnter="newDeckButton_MouseEnter" MouseLeave="newDeckButton_MouseLeave">
+                <Image  x:Name="newDeckButtonImage"/>
+            </Button>
+            <Button x:Name="deleteDeckButton" Margin="10" Grid.Column="2" Style="{DynamicResource WhiteButtonWithText}" Click="deleteDeckButton_Click" MouseEnter="deleteDeckButton_MouseEnter" MouseLeave="deleteDeckButton_MouseLeave">
+                <Image  x:Name="deleteDeckButtonImage"/>
+            </Button>
+        </Grid>
+        <Button x:Name="startTraining" Grid.Column="0" Grid.Row="4" Click="startTraining_Click" Content="Начать тренировку!" Style="{DynamicResource PurpleButtonWithText}">
+            <!--<Button.Effect>
+                <DropShadowEffect Color="White" BlurRadius="20" ShadowDepth="0"/>
+            </Button.Effect>-->
+        </Button>
+
+        <StackPanel Grid.Column="1" Grid.Row="0" Background="#FFFFFF" Grid.RowSpan="5" GotFocus="StackPanel_GotFocus">
+            <!--<CheckBox Style="{DynamicResource CheckBoxStyle1}"/>-->
+        </StackPanel>
+        <Grid Grid.Column="1" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="deckName" Grid.Column="0" Text="{Binding CurrentDeck.DeckName, Mode=TwoWay}" Style="{DynamicResource TextBoxStyle1}"/>
+            <Button x:Name="deckSaveButton" Grid.Column="1" Margin="10" Content="Rename" Click="deckSaveButton_Click" Style="{DynamicResource DarkButtonWithText}"/>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="findCard" Text="{Binding FindCardRequest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle1}" TextChanged="findCard_TextChanged"/>
+            <Button x:Name="findButton" Grid.Column="1" Margin="10"  Style="{DynamicResource DarkButtonWithText}" MouseEnter="findButton_MouseEnter" MouseDown="findButton_MouseDown" MouseLeave="findButton_MouseLeave">
+                <Image x:Name="findButtonImage"/>
+            </Button>
+
+        </Grid>
+
+
+        <ScrollViewer x:Name="cardScrollViewer" Template="{DynamicResource ScrollViewerControlTemplate1}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15" GotFocus="ScrollViewer_GotFocus" LostFocus="ScrollViewer_LostFocus" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" >
+            <ListView  x:Name="cardsInDeck" SelectionChanged="cardsInDeck_SelectionChanged" ItemsSource="{Binding Cards}" Style="{DynamicResource ListViewStyle1}" ItemContainerStyle="{DynamicResource ListViewItemStyle1}" GotFocus="cardsInDeck_GotFocus" LostFocus="cardsInDeck_LostFocus">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Height="25">
+                            <Grid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem x:Name="Copy" Command="ApplicationCommands.Copy"/>
+                                    <MenuItem x:Name="Past" Command="ApplicationCommands.Paste"/>
+                                    <MenuItem x:Name="Delete" Command="ApplicationCommands.Delete"/>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding NameOfCard}" HorizontalAlignment="Left" Grid.Column="0"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollViewer>
+        <Grid Margin="0" Grid.Row="3" Grid.Column="1" x:Name="cardButtons">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="23.2"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="newCardButton" Grid.Column="0" Style="{DynamicResource DarkButtonWithText}" Margin="10,10,10,9.8" Grid.RowSpan="2" Click="newCardButton_Click" MouseEnter="newCardButton_MouseEnter" MouseLeave="newCardButton_MouseLeave">
+                <Image  x:Name="newCardButtonImage"/>
+            </Button>
+            <Button x:Name="deleteCardButton" Grid.Column="1" Style="{DynamicResource DarkButtonWithText}" Margin="10,10,10,9.8" Grid.RowSpan="2" Click="deleteCardButton_Click_1" MouseEnter="deleteCardButton_MouseEnter" MouseLeave="deleteCardButton_MouseLeave">
+                <Image  x:Name="deleteCardButtonImage"/>
+            </Button>
+        </Grid>
+        <Grid Margin="0" Grid.Row="4" Grid.Column="1" x:Name="enviromentInteractionButtons">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="23.2"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="importExcel" Grid.Column="0" Style="{DynamicResource DarkButtonWithText}" Margin="10,10,10,9.8" Grid.RowSpan="2" Click="importExcel_Click" MouseEnter="importExcel_MouseEnter" MouseLeave="importExcel_MouseLeave">
+                <Image  x:Name="importButtonImage"/>
+            </Button>
+            <Button x:Name="exportEacel" Grid.Column="1" Style="{DynamicResource DarkButtonWithText}" Margin="10,10,10,9.8" Grid.RowSpan="2" Click="exportEacel_Click" MouseEnter="exportEacel_MouseEnter" MouseLeave="exportEacel_MouseLeave">
+                <Image  x:Name="exportButtonImage"/>
+            </Button>
+        </Grid>
+        <view:CardPresentationAndEditingElement x:Name="cardPresentationAndEditingElement" Grid.Column="2" Grid.Row="0" Grid.RowSpan="5"/>
+    </Grid>
+</Page>
