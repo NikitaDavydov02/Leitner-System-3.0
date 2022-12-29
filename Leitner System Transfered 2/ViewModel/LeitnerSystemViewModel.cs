@@ -185,10 +185,8 @@ namespace Leitner_System_Transfered_2.ViewModel
             foreach (int i in indexesOfSelectedCards)
                 cardsToRemove.Add(Cards[i]);
             model.DeleteSelectedCardsFromCurrentDeck(indexesOfSelectedCards);
-            //foreach (CardViewModel card in cardsToRemove)
-            //    Cards.Remove(card);
-            //CurrentDeck.Count = model.CurrentDeck.Cards.Count;
-            ReloadCardList();
+            foreach (CardViewModel cardViewModel in cardsToRemove)
+                Cards.Remove(cardViewModel);
             CurrentDeck.Count = model.CurrentDeck.Cards.Count;
         }
         private Dictionary<Deck,int> GetDecksForTraining()

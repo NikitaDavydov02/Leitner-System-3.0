@@ -155,9 +155,9 @@ namespace Leitner_System_Transfered_2.Model
                     }
                 }
             }
-            catch
+            catch(Exception e)
             {
-                MessageBox.Show("Error while reading from: " + deckFileFullPath);
+                MessageBox.Show("Error while reading from: " + deckFileFullPath + e.Message);
                 return null;
             }
             return readingDeck;
@@ -237,11 +237,30 @@ namespace Leitner_System_Transfered_2.Model
             // Цикл по строкам
             for (int i = 1; i <= rows; i++)
             {
-                string question = excelSheet.Cells[i, 1].Value.ToString();
-                string answer = excelSheet.Cells[i, 2].Value.ToString();
+                string question;
+                string answer;
+                try
+                {
+                    question=excelSheet.Cells[i, 1].Value.ToString();
+                }
+                catch
+                {
+                    question = "";
+                }
+                try
+                {
+                    answer = excelSheet.Cells[i, 2].Value.ToString();
+                }
+                catch
+                {
+                    answer = "";
+                }
                 if(!output.ContainsKey(question))
                     output.Add(question, answer);
+                else
+                {
 
+                }
             }
             application.Quit();
             System.Runtime.InteropServices.Marshal.ReleaseComObject(application);

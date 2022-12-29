@@ -16,6 +16,7 @@ namespace Leitner_System_Transfered_2.Model
     [DataContract]
     public class Card
     {
+        
         //--------------------------------------------------------------------------------
         //------------------------------------- DATA MEMBERS ---------------------------------
         //--------------------------------------------------------------------------------
@@ -76,6 +77,7 @@ namespace Leitner_System_Transfered_2.Model
         /// <param name="absoluteAnswerImagePath">absolute path of new answer image</param>
         public void SaveThisCard(string question, string answer, string absoluteQuestionImagePath, string absoluteAnswerImagePath)
         {
+            
             string relativeToDeckFolderQuestionImagePath = "";
             string relativeToDeckFolderAnswerImagePath = "";
             FileManager.CopyNewImagesToDeckFolder(this, absoluteQuestionImagePath, absoluteAnswerImagePath, out relativeToDeckFolderAnswerImagePath, out relativeToDeckFolderQuestionImagePath);
