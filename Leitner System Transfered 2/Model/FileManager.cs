@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Leitner_System_Transfered_2.Model;
 using System.IO;
 using System.Windows;
@@ -257,11 +258,8 @@ namespace Leitner_System_Transfered_2.Model
                 }
                 if(!output.ContainsKey(question))
                     output.Add(question, answer);
-                else
-                {
-
-                }
             }
+            //
             application.Quit();
             System.Runtime.InteropServices.Marshal.ReleaseComObject(application);
             return output;

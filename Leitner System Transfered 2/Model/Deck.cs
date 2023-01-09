@@ -66,7 +66,6 @@ namespace Leitner_System_Transfered_2.Model
         {
             Card newCard = new Card(this, "New card", "");
             Cards.Add(newCard);
-            FileManager.SaveDeckOrUpdateDeckFile(this);
             return newCard;
         }
         /// <summary>

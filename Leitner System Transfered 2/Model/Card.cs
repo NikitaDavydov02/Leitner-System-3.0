@@ -60,6 +60,13 @@ namespace Leitner_System_Transfered_2.Model
             RepitionFrequensy = RepitionFrequensy.Daily;
             ReverseRepitionFrequensy = RepitionFrequensy.Daily;
         }
+        public void SetNewFields(string question, string answer, string relativeToDeckFolderQuestionImagePath, string relativeToDeckFolderAnswerImagePath)
+        {
+            Question = question;
+            Answer = answer;
+            RelativeToDeckFolderQuestionImagePath = relativeToDeckFolderQuestionImagePath;
+            RelativeToDeckFolderAnswerImagePath = relativeToDeckFolderAnswerImagePath;
+        }
         /// <summary>
         /// Set parent deck property of this card
         /// </summary>
@@ -75,18 +82,18 @@ namespace Leitner_System_Transfered_2.Model
         /// <param name="answer">new answer of this card</param>
         /// <param name="absoluteQuestionImagePath">absolute path of new question image</param>
         /// <param name="absoluteAnswerImagePath">absolute path of new answer image</param>
-        public void SaveThisCard(string question, string answer, string absoluteQuestionImagePath, string absoluteAnswerImagePath)
-        {
-            
-            string relativeToDeckFolderQuestionImagePath = "";
-            string relativeToDeckFolderAnswerImagePath = "";
-            FileManager.CopyNewImagesToDeckFolder(this, absoluteQuestionImagePath, absoluteAnswerImagePath, out relativeToDeckFolderAnswerImagePath, out relativeToDeckFolderQuestionImagePath);
-            Question = question;
-            Answer = answer;
-            RelativeToDeckFolderQuestionImagePath = relativeToDeckFolderQuestionImagePath;
-            RelativeToDeckFolderAnswerImagePath = relativeToDeckFolderAnswerImagePath;
-            FileManager.SaveDeckOrUpdateDeckFile(parentDeck);//dsdvs
-        }
+        //public void SaveThisCard(string question, string answer, string absoluteQuestionImagePath, string absoluteAnswerImagePath)
+        //{
+        //    string relativeToDeckFolderQuestionImagePath = "";
+        //    string relativeToDeckFolderAnswerImagePath = "";
+        //    if (!String.IsNullOrEmpty(absoluteAnswerImagePath) || !String.IsNullOrEmpty(absoluteQuestionImagePath))
+        //        FileManager.CopyNewImagesToDeckFolder(this, absoluteQuestionImagePath, absoluteAnswerImagePath, out relativeToDeckFolderAnswerImagePath, out relativeToDeckFolderQuestionImagePath);
+        //    Question = question;
+        //    Answer = answer;
+        //    RelativeToDeckFolderQuestionImagePath = relativeToDeckFolderQuestionImagePath;
+        //    RelativeToDeckFolderAnswerImagePath = relativeToDeckFolderAnswerImagePath;
+        //    FileManager.SaveDeckOrUpdateDeckFile(parentDeck);//dsdvs
+        //}
         ///<summary>
         ///Update last repitition time by answer 
         ///</summary>

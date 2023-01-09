@@ -136,10 +136,13 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         public void SaveThisCard()
         {
-            if(!straightOrReverse)
-                Card.SaveThisCard(Question, Answer, AbsoluteQuestionImagePath, AbsoluteAnswerImagePath);
+            if (!straightOrReverse)
+                DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Question }, new List<string>() { Answer }, new List<string>() { AbsoluteQuestionImagePath }, new List<string>() { AbsoluteAnswerImagePath });
+                //Card.SaveThisCard(Question, Answer, AbsoluteQuestionImagePath, AbsoluteAnswerImagePath);
             else
-                Card.SaveThisCard(Answer, Question, AbsoluteAnswerImagePath, AbsoluteQuestionImagePath);
+                DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Question }, new List<string>() { Answer }, new List<string>() { AbsoluteAnswerImagePath }, new List<string>() { AbsoluteQuestionImagePath });
+
+            //Card.SaveThisCard(Answer, Question, AbsoluteAnswerImagePath, AbsoluteQuestionImagePath);
             //Изображение сохранено в колоду и теперь может быть перезагружено из неё
             //AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.parentDeck.Name, Card.RelativeToDeckFolderAnswerImagePath);
             //AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.parentDeck.Name, Card.RelativeToDeckFolderQuestionImagePath);
