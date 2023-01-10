@@ -44,6 +44,8 @@ namespace Leitner_System_Transfered_2.Model
         public static void ReloadDecksFromFolder(string folderPath = "")
         {
             Decks = FileManager.GetDecksFromFolder(folderPath);
+            foreach (Deck deck in Decks)
+                deck.SetParentDeckToCards();
             CurrentDeck = null;
             CurrentCard = null;
         }
@@ -62,25 +64,20 @@ namespace Leitner_System_Transfered_2.Model
         /// Delete all selected decks
         /// </summary>
         /// <param name="indexesOfDecksToRemove">List of indexes of decks that sholud be removed</param>
-        public static void DeleteSelectedDecks(List<int> indexesOfDecksToRemove)
+        public static void DeleteSelectedDecks(List<Deck> decksToRemove)
         {
-            if (indexesOfDecksToRemove.Count == 0)
+            if (decksToRemove.Count==0)
             {
                 MessageBox.Show("Deck is not choosen");
                 return;
             }
-            List<Deck> decksToRemove = new List<Deck>();
-            foreach (int i in indexesOfDecksToRemove)
-                decksToRemove.Add(Decks[i]);
-            int removingDeckIndex;
-
             foreach (Deck deck in decksToRemove)
             {
-                removingDeckIndex = Decks.IndexOf(deck);
                 FileManager.DeleteDeckFromCurrentFolder(deck.Name);
                 Decks.Remove(deck);
             }
             CurrentCard = null;
+            CurrentDeck = null;
         }
         /// <summary>
         /// [Optimized] Change CurrentDecks by new index
@@ -96,25 +93,26 @@ namespace Leitner_System_Transfered_2.Model
         /// <summary>
         /// Create new card in selected deck
         /// </summary>
-        public static void AddCardToCurrentDeck()
+        public static void AddCardsToCurrentDeck(int n = 1)
         {
             if (CurrentDeck == null)
             {
                 MessageBox.Show("Deck is not choosen");
                 return;
             }
-            CurrentDeck.CreateNewCard();
+            for(int i=0;i<n;i++)
+                CurrentDeck.CreateNewCard();
             FileManager.SaveDeckOrUpdateDeckFile(CurrentDeck);
         }
         /// <summary>
         /// Delete all selected cards from current deck
         /// </summary>
         /// <param name="indexesOfCardsToRemove">list of indexes of cards to delete</param>
-        public static void DeleteSelectedCardsFromCurrentDeck(List<int> indexesOfCardsToRemove)
+        public static void DeleteSelectedCardsFromCurrentDeck(List<Card>cardsToRemove)
         {
             if (CurrentDeck == null)
                 return;
-            CurrentDeck.DeleteSelectedCard(indexesOfCardsToRemove);
+            CurrentDeck.DeleteSelectedCard(cardsToRemove);
         }
         /// <summary>
         /// Update Current card property by index of new card
@@ -123,30 +121,22 @@ namespace Leitner_System_Transfered_2.Model
         public static void UpdateSelectionCurrentCard(int newCurrentSelectedCardIndex)
         {
             if (CurrentDeck == null || newCurrentSelectedCardIndex < 0)
-            {
                 CurrentCard = null;
-                newCurrentSelectedCardIndex = -1;
-            }
             else if(CurrentDeck.Cards.Count>0 && CurrentDeck.Cards.Count>newCurrentSelectedCardIndex)
-            {
                 CurrentCard = CurrentDeck.Cards[newCurrentSelectedCardIndex];
-            }
             else
-            {
                 CurrentCard = null;
-                newCurrentSelectedCardIndex = -1;
-            }
         }
         /// <summary>
         /// Copy cards by its indexes to card's buffer
         /// </summary>
         /// <param name="indexesOfSelectedCards">list of indexes of cards to copy</param>
-        public static void CopyCardsInBuffer(List<int> indexesOfSelectedCards)
+        public static void CopyCardsInBuffer(List<Card> selectedCards)
         {
             deckBuffer.Clear();
             buffer.Clear();
-            foreach(int index in indexesOfSelectedCards)
-                buffer.Add(CurrentDeck.Cards[index]);
+            foreach(Card card in selectedCards)
+                buffer.Add(card);
         }
         /// <summary>
         /// paste all cards from card's buffer to current deck
@@ -155,8 +145,7 @@ namespace Leitner_System_Transfered_2.Model
         {
             if (CurrentDeck == null)
                 return;
-            foreach (Card card in buffer)
-                CopyCardToDeck(card, CurrentDeck);
+            CopyCardsToDeck(buffer, CurrentDeck);
         }
         public static void SaveCards(List<Card> cards, List<string> question, List<string> answer, List<string> absoluteQuestionImagePath, List<string> absoluteAnswerImagePath)
         {
@@ -173,32 +162,36 @@ namespace Leitner_System_Transfered_2.Model
 
                 //dsdvs
             }
-            FileManager.SaveDeckOrUpdateDeckFile(cards[0].parentDeck);
+            FileManager.SaveDeckOrUpdateDeckFile(cards[0].ParentDeck);
         }
-        private static void CopyCardToDeck(Card cardToCopy,Deck deck)
+        private static void CopyCardsToDeck(List<Card> cardsToCopy,Deck deck)
         {
-            if (cardToCopy == null || deck == null)
+            if (cardsToCopy == null || deck == null||cardsToCopy.Count==0)
                 return;
-            Card newCard = deck.CreateNewCard();
-            FileManager.SaveDeckOrUpdateDeckFile(deck);
-            string answrAbsolutImagPath = "";
-            string qustionAbsolutImagPath = "";
-            if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderQuestionImagePath))
-                qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.parentDeck.Name, cardToCopy.RelativeToDeckFolderQuestionImagePath);
-            if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderAnswerImagePath))
-                answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.parentDeck.Name, cardToCopy.RelativeToDeckFolderAnswerImagePath);
-            SaveCards(new List<Card>() { newCard}, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<string>() { qustionAbsolutImagPath }, new List<string>() { answrAbsolutImagPath });
+            foreach(Card cardToCopy in cardsToCopy)
+            {
+                Card newCard = deck.CreateNewCard();
+                string answrAbsolutImagPath = "";
+                string qustionAbsolutImagPath = "";
+                if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderQuestionImagePath))
+                    qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.ParentDeck.Name, cardToCopy.RelativeToDeckFolderQuestionImagePath);
+                if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderAnswerImagePath))
+                    answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.ParentDeck.Name, cardToCopy.RelativeToDeckFolderAnswerImagePath);
+                SaveCards(new List<Card>() { newCard }, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<string>() { qustionAbsolutImagPath }, new List<string>() { answrAbsolutImagPath });
+
+            }
+             FileManager.SaveDeckOrUpdateDeckFile(deck);
         }
         /// <summary>
         /// Copy decks by its indexes to deck's buffer
         /// </summary>
         /// <param name="indexesOfSelectedCards">list of indexes of decks to copy</param>
-        public static void CopyDecksInBuffer(List<int> indexesOfSelectedDecks)
+        public static void CopyDecksInBuffer(List<Deck> decksToCopy)
         {
             deckBuffer.Clear();
             buffer.Clear();
-            foreach (int index in indexesOfSelectedDecks)
-                deckBuffer.Add(Decks[index]);
+            foreach (Deck deck in decksToCopy)
+                deckBuffer.Add(deck);
         }
         /// <summary>
         /// paste all decks from deck's buffer to current deck
@@ -209,8 +202,7 @@ namespace Leitner_System_Transfered_2.Model
             {
                 Deck createdDeck = CreateNewDeck();
                 createdDeck.Rename(FileManager.FindNameForNewDeckFolderInCurrentFolderWithDecks(deckToCopy.Name + "_Copy"));
-                foreach (Card card in deckToCopy.Cards)
-                    CopyCardToDeck(card, createdDeck);
+                CopyCardsToDeck(deckToCopy.Cards, CurrentDeck);
             }
         }
         public static void ImportExcelFileToCurrentDeck(string absolutePath)
@@ -230,7 +222,6 @@ namespace Leitner_System_Transfered_2.Model
             {
                 importedCards.Add(CurrentDeck.CreateNewCard());
                 questionImagesPaths.Add("");
-                //newCard.SaveThisCard(question, answer, "", "");
             }
             SaveCards(importedCards, importContent.Keys.ToList<string>(), importContent.Values.ToList<string>(), questionImagesPaths, questionImagesPaths);
         }

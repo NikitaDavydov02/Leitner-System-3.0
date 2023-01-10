@@ -39,10 +39,6 @@ namespace Leitner_System_Transfered_2.ViewModel
             }
         }
         //--------------------------------------------------------------------------------
-        //------------------------------------- PRIVATE ---------------------------------
-        //--------------------------------------------------------------------------------
-        //private DeckManager model;
-        //--------------------------------------------------------------------------------
         //------------------------------------- METHODS ---------------------------------
         //--------------------------------------------------------------------------------
         /// <summary>
@@ -53,9 +49,6 @@ namespace Leitner_System_Transfered_2.ViewModel
             Decks = new ObservableCollection<DeckViewModel>();
             Cards = new ObservableCollection<CardViewModel>();
             DeckManager.Inicializer();
-            //model.DeckAdd += AddDeckHandler;
-            //model.DeckRemove += RemoveDeckHandler;
-            //model.DecksReload += DecksReloadHandler;
             ReloadDeckList();
             ReloadCardList();
         }
@@ -88,13 +81,15 @@ namespace Leitner_System_Transfered_2.ViewModel
         /// [Optimozed] Update displaied card list from the model.CurrentDeck if it is possible
         /// </summary>
         /// 
-        private void ReloadCardList()
+        private bool ReloadCardList()
         {
+            //if (!CheckForUnsavedCardsDoWeContinue())
+            //    return false;
             Cards.Clear();
             if (DeckManager.CurrentDeck != null)
             {
                 if (DeckManager.CurrentDeck.Cards == null)
-                    return;
+                    return true;
                 foreach (Card card in DeckManager.CurrentDeck.Cards)
                 {
                     if (card.Question.Contains(FindCardRequest) || card.Answer.Contains(FindCardRequest)||String.IsNullOrEmpty(FindCardRequest))
@@ -106,23 +101,11 @@ namespace Leitner_System_Transfered_2.ViewModel
             }
             CurrentCard = null;
             OnPropertyChanged("CurrentCard");
-        }
-        /// <summary>
-        /// Update fields of current displaied card
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        public void CurrentSelectedCardFieldsChangedHandler(object sender, EventArgs args)
-        {
-            OnPropertyChanged("CurrentCard");
-            if (CurrentCard == null)
-                return;
-            CurrentCard.OnPropertyChanged("Question");
-            CurrentCard.OnPropertyChanged("Answer");
+            return true;
         }
         public void AddCardToCurrentDeck()
         {
-            DeckManager.AddCardToCurrentDeck();
+            DeckManager.AddCardsToCurrentDeck();
             if (DeckManager.CurrentDeck != null)
             {
                 CardViewModel cardViewModel = new CardViewModel(DeckManager.CurrentDeck.Cards[DeckManager.CurrentDeck.Cards.Count - 1]); ;
@@ -132,17 +115,15 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         public void AddDeck()
         {
+            //if (!CheckForUnsavedCardsDoWeContinue())
+            //    return;
             DeckManager.CreateNewDeck();
             Decks.Add(new DeckViewModel(DeckManager.Decks[DeckManager.Decks.Count - 1]));
         }
         public void ChooseFolder()
         {
-            if (CheckForUnsavedCards())
-            {
-                MessageBoxResult result = System.Windows.MessageBox.Show("У вас есть несохранённые изменения в картах. Вы действительно хотите продолжить?", "", MessageBoxButton.YesNo);
-                if (result != MessageBoxResult.Yes)
-                    return;
-            }
+            if (!CheckForUnsavedCardsDoWeContinue())
+                return;
             string folderPath = "";
             FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();
             folderBrowserDialog1.ShowDialog();
@@ -161,14 +142,12 @@ namespace Leitner_System_Transfered_2.ViewModel
             }
             OnPropertyChanged("CurrentCard");
         }
-        public void UpdateCurrentDeckIndex(int index)
+        public bool UpdateCurrentDeckIndex(int index)
         {
-            if (CheckForUnsavedCards())
-            {
-                MessageBoxResult result = System.Windows.MessageBox.Show("У вас есть несохранённые изменения в картах. Вы действительно хотите продолжить?", "", MessageBoxButton.YesNo);
-                if (result != MessageBoxResult.Yes)
-                    return;
-            }
+            if (index == Decks.IndexOf(CurrentDeck))
+                return false;
+            if (!CheckForUnsavedCardsDoWeContinue())
+                return false;
             DeckManager.ChangeSelectionOfDeck(index);
             ReloadCardList();
             FindCardRequest = "";
@@ -176,16 +155,21 @@ namespace Leitner_System_Transfered_2.ViewModel
             if (DeckManager.CurrentDeck != null)
                     CurrentDeck = Decks[index];
             OnPropertyChanged("CurrentDeck");
+            return true;
         }
         public void DeleteSelectedCards(List<int> indexesOfSelectedCards)
         {
             if (CurrentDeck == null)
                 return;
-            List<CardViewModel> cardsToRemove = new List<CardViewModel>();
+            List<CardViewModel> cardsViewModelsToRemove = new List<CardViewModel>();
+            List<Card> cardsModelsToRemove = new List<Card>();
             foreach (int i in indexesOfSelectedCards)
-                cardsToRemove.Add(Cards[i]);
-            DeckManager.DeleteSelectedCardsFromCurrentDeck(indexesOfSelectedCards);
-            foreach (CardViewModel cardViewModel in cardsToRemove)
+            {
+                cardsViewModelsToRemove.Add(Cards[i]);
+                cardsModelsToRemove.Add(Cards[i].Card);
+            }
+            DeckManager.DeleteSelectedCardsFromCurrentDeck(cardsModelsToRemove);
+            foreach (CardViewModel cardViewModel in cardsViewModelsToRemove)
                 Cards.Remove(cardViewModel);
             CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
         }
@@ -199,12 +183,8 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         public TrainingViewModel StartNewTraining()
         {
-            if (CheckForUnsavedCards())
-            {
-                MessageBoxResult result = System.Windows.MessageBox.Show("У вас есть несохранённые изменения в картах. Вы действительно хотите продолжить?", "", MessageBoxButton.YesNo);
-                if (result != MessageBoxResult.Yes)
-                    return null;
-            }
+            if (!CheckForUnsavedCardsDoWeContinue())
+                return null;
             TrainingModel trainingModel = new TrainingModel(GetDecksForTraining());
             if (trainingModel == null)
                 return null;
@@ -212,8 +192,15 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         public void SelectAllDecks()
         {
+            bool allDecksAreSelected = true;
+            foreach(DeckViewModel deck in Decks)
+                if (!deck.DeckIsSelectedForTraining)
+                {
+                    allDecksAreSelected = false;
+                    break;
+                }
             foreach (DeckViewModel deckViewModel in Decks)
-                deckViewModel.SelectDeck();
+                deckViewModel.SelectDeck(!allDecksAreSelected);
         }
         public void GeneralReverseSettingsChanged(int newGeneralSettings)
         {
@@ -250,36 +237,45 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         public void CopyCardsInBuffer(List<int> indexesOfSelectedCards)
         {
-            DeckManager.CopyCardsInBuffer(indexesOfSelectedCards);
+            List<Card> cardsToCopy = new List<Card>();
+            foreach (int i in indexesOfSelectedCards)
+                cardsToCopy.Add(Cards[i].Card);
+            DeckManager.CopyCardsInBuffer(cardsToCopy);
         }
         public void PasteCardsFromBuffer()
         {
             if (CurrentDeck == null)
                 return;
             DeckManager.PasteCardsFromBuffer();
-            ReloadCardList();
+            //ReloadCardList();
             for (int i = Cards.Count; i < DeckManager.CurrentDeck.Cards.Count;i++)
                 Cards.Add(new CardViewModel(DeckManager.CurrentDeck.Cards[i]));
             CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
         }
         public void CopyDecksInBuffer(List<int> indexesOfSelectedDecks)
         {
-            DeckManager.CopyDecksInBuffer(indexesOfSelectedDecks);
+            List<Deck> decksToCopy = new List<Deck>();
+            foreach (int i in indexesOfSelectedDecks)
+                decksToCopy.Add(Decks[i].Deck);
+            DeckManager.CopyDecksInBuffer(decksToCopy);
         }
         public void PasteDecksFromBuffer()
         {
+            if (!CheckForUnsavedCardsDoWeContinue())
+                return;
             DeckManager.PasteDecksFromBuffer();
             ReloadDeckList();
         }
         public void DeleteSelectedDecks(List<int> indexesOfSelectedDecks)
         {
-            if (CheckForUnsavedCards())
-            {
-                MessageBoxResult result = System.Windows.MessageBox.Show("У вас есть несохранённые изменения в картах. Вы действительно хотите продолжить?", "", MessageBoxButton.YesNo);
-                if (result != MessageBoxResult.Yes)
-                    return;
-            }
-            DeckManager.DeleteSelectedDecks(indexesOfSelectedDecks);
+            MessageBoxResult result = System.Windows.MessageBox.Show("Do you want to delete this deck?", "", MessageBoxButton.YesNo);
+            if (result != MessageBoxResult.Yes)
+                return;
+            List<Deck> decksToDelete = new List<Deck>();
+            foreach (int i in indexesOfSelectedDecks)
+                decksToDelete.Add(Decks[i].Deck);
+                
+            DeckManager.DeleteSelectedDecks(decksToDelete);
             ReloadDeckList();
             ReloadCardList();
             OnPropertyChanged("CurrentDeck");
@@ -295,25 +291,31 @@ namespace Leitner_System_Transfered_2.ViewModel
             ReloadCardList();
             ReloadDeckList();
         }
-        public bool CheckForUnsavedCards()
+        public bool CheckForUnsavedCardsDoWeContinue()
         {
             foreach (CardViewModel card in Cards)
                 if (card.UnsavedChanges)
-                    return true;
-            return false;
-        }
-        public void UpdateCardListByCardFindRequest(string request)
-        {
-            //ReloadCardList(request);
+                {
+                    MessageBoxResult result = System.Windows.MessageBox.Show("У вас есть несохранённые изменения в картах. Вы действительно хотите продолжить?", "", MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
+                        return true;
+                    else
+                        return false;
+                }
+            return true;
         }
         public void ImportExcelFileToCurrentDeck(string filePath)
         {
             if (String.IsNullOrEmpty(filePath))
                 return;
-            if (DeckManager.CurrentDeck == null)
+            if (DeckManager.CurrentDeck == null||!CheckForUnsavedCardsDoWeContinue())
                 return;
             DeckManager.ImportExcelFileToCurrentDeck(filePath);
-            ReloadCardList();
+            //ReloadCardList();
+            //CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
+            //ReloadCardList();
+            for (int i = Cards.Count; i < DeckManager.CurrentDeck.Cards.Count; i++)
+                Cards.Add(new CardViewModel(DeckManager.CurrentDeck.Cards[i]));
             CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
         }
         public void ExportCurrentDeckToExcelFile(string filePath)

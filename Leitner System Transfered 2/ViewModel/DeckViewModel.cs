@@ -50,9 +50,9 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             return DeckName;
         }
-        public void SelectDeck()
+        public void SelectDeck(bool value)
         {
-            DeckIsSelectedForTraining = true;
+            DeckIsSelectedForTraining = value;
             OnPropertyChanged("DeckIsSelectedForTraining");
         }
         public void ChangeReverseOfDeck(int newReverseSettings)

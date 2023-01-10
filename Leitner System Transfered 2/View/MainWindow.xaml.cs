@@ -65,7 +65,21 @@ namespace Leitner_System_Transfered_2.View
             //Reload decks
         }
 
-        private void mainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        
+
+        private void mainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            double controlsize = ((SystemParameters.PrimaryScreenWidth / 12) / 3 * 2) / 5 * 0.7;
+            System.Windows.Application.Current.Resources.Remove("ControlFontSize");
+            System.Windows.Application.Current.Resources.Add("ControlFontSize", controlsize);
+        }
+
+        private void mainWindow_GotFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (this.Content == startPage)
             {
@@ -81,18 +95,6 @@ namespace Leitner_System_Transfered_2.View
                 if (trainingPage.CheckForUnsavedChanges())
                     e.Cancel = true;
             }
-        }
-
-        private void mainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            double controlsize = ((SystemParameters.PrimaryScreenWidth / 12) / 3 * 2) / 5 * 0.7;
-            System.Windows.Application.Current.Resources.Remove("ControlFontSize");
-            System.Windows.Application.Current.Resources.Add("ControlFontSize", controlsize);
-        }
-
-        private void mainWindow_GotFocus(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

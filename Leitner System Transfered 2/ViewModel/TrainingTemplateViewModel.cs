@@ -35,7 +35,7 @@ namespace Leitner_System_Transfered_2.ViewModel
                 OnPropertyChanged("TemplateIsSelectedForTraining");
             }
         }
-        private TrainingTemplate trainingTemplate;
+        public TrainingTemplate trainingTemplate { get; private set; }
         public TrainingTemplateViewModel(TrainingTemplate trainingTemplate)
         {
             this.trainingTemplate = trainingTemplate;

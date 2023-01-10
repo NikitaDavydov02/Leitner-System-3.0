@@ -26,7 +26,7 @@ namespace Leitner_System_Transfered_2.Model
         //private Dictionary<Card, Deck> trainingCardsDictionary;
         private List<Card> trainingCards;
         private List<Deck> trainingDecks;
-        public Dictionary<Card, int> Results { get; private set; }
+        public Dictionary<Card, Result> Results { get; private set; }
         //0 - undef
         //1 - correct
         //2 -wrong
@@ -50,13 +50,9 @@ namespace Leitner_System_Transfered_2.Model
         {
             //Find cuurent training template
             if (FileManager.settings.CurrentTrainingTemplate != -1)
-            {
                 currentTrainingTemplate = FileManager.settings.TrainingTemplates[FileManager.settings.CurrentTrainingTemplate];
-            }
             else
-            {
-                currentTrainingTemplate = FileManager.settings.CreateDefault();
-            }
+                currentTrainingTemplate = FileManager.settings.GetDefaultTrainingTemplate();
             maxTrainingCardsCount = currentTrainingTemplate.maxCardsCount;
 
             this.trainingDecks = trainingDecksWithReverseSettings.Keys.ToList<Deck>();
@@ -64,16 +60,9 @@ namespace Leitner_System_Transfered_2.Model
             if(trainingCardsWithReverse != null)
                 trainingCards = trainingCardsWithReverse.Keys.ToList();
             trainingCards = ShuffleList(trainingCards);
-            //trainingCardsCopyBeforeTraining = new List<Card>();
-            //foreach(Card trainingCard in trainingCards)
-            //{
-            //    Card card = trainingCard.Clone() as Card;
-            //    card.SetPerentDeck(trainingCard.parentDeck);
-            //    trainingCardsCopyBeforeTraining.Add(card);
-            //}
-            Results = new Dictionary<Card, int>();
+            Results = new Dictionary<Card, Result>();
             foreach (Card card in trainingCards)
-                Results.Add(card, 0);
+                Results.Add(card, Result.NoAnswer);
             CurrentTrainingCardIndex = 0;
         }
         private List<Card> ShuffleList(List<Card> inputList)
@@ -132,18 +121,7 @@ namespace Leitner_System_Transfered_2.Model
             foreach (Card card in cardsWithReverse.Keys.ToList())
                 sortedCards.Add(card);
             //Sort
-            for(int i=0;i<sortedCards.Count;i++)
-                for(int j = 0; j < sortedCards.Count - 1; j++)
-                {
-                    int jDays = sortedCards[j].DaysSinceCardSholdHaveBeenRepeated(cardsWithReverse[sortedCards[j]]);
-                    int jNextDays = sortedCards[j+1].DaysSinceCardSholdHaveBeenRepeated(cardsWithReverse[sortedCards[j+1]]);
-                    if (jDays < jNextDays)
-                    {
-                        Card copy = sortedCards[j];
-                        sortedCards[j] = sortedCards[j + 1];
-                        sortedCards[j + 1] = copy;
-                    }
-                }
+            SortCardsListByDaysSinceCardSholdHaveBeenRepeated(sortedCards, cardsWithReverse);
 
             int numerOfCards = 0;
             if (sortedCards.Count > maxTrainingCardsCount)
@@ -153,9 +131,25 @@ namespace Leitner_System_Transfered_2.Model
             Dictionary<Card, bool> output = new Dictionary<Card, bool>();
             for (int i = 0; i < numerOfCards; i++)
                 output.Add(sortedCards[i], cardsWithReverse[sortedCards[i]]);
+
             //Упорядочить карты по времени с =о дня повторения
             //Взять столько первых карт, сколько нужно для погашения задолженности за неделю плюс сколько в среднем добавляешь, но так, чтобы меньше определенноо=го максимума
             return output;
+        }
+        private void SortCardsListByDaysSinceCardSholdHaveBeenRepeated(List<Card> sortedCards, Dictionary<Card,bool> cardsWithReverse)
+        {
+            for (int i = 0; i < sortedCards.Count; i++)
+                for (int j = 0; j < sortedCards.Count - 1; j++)
+                {
+                    int jDays = sortedCards[j].DaysSinceCardSholdHaveBeenRepeated(cardsWithReverse[sortedCards[j]]);
+                    int jNextDays = sortedCards[j + 1].DaysSinceCardSholdHaveBeenRepeated(cardsWithReverse[sortedCards[j + 1]]);
+                    if (jDays < jNextDays)
+                    {
+                        Card copy = sortedCards[j];
+                        sortedCards[j] = sortedCards[j + 1];
+                        sortedCards[j + 1] = copy;
+                    }
+                }
         }
         /// <summary>
         /// Update card repitition time on basis of answer, increase current card index. If it was the last card comlete the training, else - fire NextCard event
@@ -164,13 +158,9 @@ namespace Leitner_System_Transfered_2.Model
         public void NextCard(bool answer)
         {
             if (answer)
-                Results[trainingCards[CurrentTrainingCardIndex]] = 1;
+                Results[trainingCards[CurrentTrainingCardIndex]] = Result.Right;
             else
-                Results[trainingCards[CurrentTrainingCardIndex]] = 2;
-            //if(!trainingCardsWithReverse[trainingCards[CurrentTrainingCardIndex]])
-            //    trainingCards[CurrentTrainingCardIndex].UpdateLastRepitionTime(answer);
-            //else
-            //    trainingCards[CurrentTrainingCardIndex].UpdateLastReverseRepitionTime(answer);
+                Results[trainingCards[CurrentTrainingCardIndex]] = Result.Wrong;
             CurrentTrainingCardIndex++;
             if (CurrentTrainingCardIndex >= trainingCards.Count)
             {
@@ -199,8 +189,6 @@ namespace Leitner_System_Transfered_2.Model
         /// </summary>
         public void CompleteTraining()
         {
-            //Removing of marked cards
-            
             TrainingIsComleted = true;
             OnCompleteTrainingEvent();
         }
@@ -208,14 +196,14 @@ namespace Leitner_System_Transfered_2.Model
         {
             foreach (Card card in Results.Keys)
             {
-                if (Results[card] == 3)
-                    card.parentDeck.DeleteSelectedCard(new List<int>() { card.parentDeck.Cards.IndexOf(card) });
+                if (Results[card] == Result.Delete)
+                    card.ParentDeck.DeleteSelectedCard(new List<Card>() { card});
                 bool answer = false;
-                if (Results[card] == 1)
+                if (Results[card] == Result.Right)
                     answer = true;
-                if (Results[card] == 2)
+                if (Results[card] == Result.Wrong)
                     answer = false;
-                if (Results[card] == 0)
+                if (Results[card] == Result.NoAnswer)
                     continue;
                 if (!trainingCardsWithReverse[card])
                     card.UpdateLastRepitionTime(answer);
@@ -228,7 +216,7 @@ namespace Leitner_System_Transfered_2.Model
         }
         public void DeleteCurrentCard()
         {
-            Results[trainingCards[CurrentTrainingCardIndex]] = 3;
+            Results[trainingCards[CurrentTrainingCardIndex]] = Result.Delete;
             CurrentTrainingCardIndex++;
             if (CurrentTrainingCardIndex >= trainingCards.Count)
             {
@@ -237,10 +225,10 @@ namespace Leitner_System_Transfered_2.Model
             }
             OnNextCardEvent(new NextCardEventArgs(trainingCards[CurrentTrainingCardIndex], trainingCardsWithReverse[trainingCards[CurrentTrainingCardIndex]]));
         }
-        public void UpdateResultOfCard(Card card, int indexOfResult)
+        public void UpdateResultOfCard(Card card, Result result)
         {
             //Processing of result changing
-            Results[card] = indexOfResult;
+            Results[card] = result;
 
             foreach (Deck deck in trainingDecks)
                 FileManager.SaveDeckOrUpdateDeckFile(deck);
@@ -276,5 +264,11 @@ namespace Leitner_System_Transfered_2.Model
             StraightOrReverse = straightOrReverse;
         }
     }
-
+    public enum Result
+    {
+        NoAnswer,
+        Right,
+        Wrong,
+        Delete,
+    }
 }

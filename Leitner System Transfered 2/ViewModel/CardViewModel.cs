@@ -43,12 +43,12 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             get
             {
-                string cardAbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.parentDeck.Name, Card.RelativeToDeckFolderAnswerImagePath);
+                string cardAbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.ParentDeck.Name, Card.RelativeToDeckFolderAnswerImagePath);
                 if (String.IsNullOrEmpty(Card.RelativeToDeckFolderAnswerImagePath))
-                    cardAbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.parentDeck.Name);
-                string cardAbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.parentDeck.Name, Card.RelativeToDeckFolderQuestionImagePath);
+                    cardAbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.ParentDeck.Name);
+                string cardAbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.ParentDeck.Name, Card.RelativeToDeckFolderQuestionImagePath);
                 if (String.IsNullOrEmpty(Card.RelativeToDeckFolderQuestionImagePath))
-                    cardAbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.parentDeck.Name);
+                    cardAbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.ParentDeck.Name);
                 if ((!straightOrReverse && Question == Card.Question &&
                 Answer == Card.Answer &&
                 AbsoluteQuestionImagePath == cardAbsoluteQuestionImagePath &&
@@ -56,9 +56,7 @@ namespace Leitner_System_Transfered_2.ViewModel
                 Answer == Card.Question &&
                 AbsoluteAnswerImagePath == cardAbsoluteQuestionImagePath &&
                 AbsoluteQuestionImagePath == cardAbsoluteAnswerImagePath))
-                {
                     return false;
-                }
                 else
                     return true;
             }
@@ -117,15 +115,15 @@ namespace Leitner_System_Transfered_2.ViewModel
             {
                 Question = card.Question;
                 Answer = card.Answer;
-                AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.parentDeck.Name, card.RelativeToDeckFolderQuestionImagePath);
-                AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.parentDeck.Name, card.RelativeToDeckFolderAnswerImagePath);
+                AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.ParentDeck.Name, card.RelativeToDeckFolderQuestionImagePath);
+                AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.ParentDeck.Name, card.RelativeToDeckFolderAnswerImagePath);
             }
             else
             {
                 Answer = card.Question;
                 Question = card.Answer;
-                AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.parentDeck.Name, card.RelativeToDeckFolderQuestionImagePath);
-                AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.parentDeck.Name, card.RelativeToDeckFolderAnswerImagePath);
+                AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.ParentDeck.Name, card.RelativeToDeckFolderQuestionImagePath);
+                AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.ParentDeck.Name, card.RelativeToDeckFolderAnswerImagePath);
             }
             //Было добавлено
             OnPropertyChanged("AnswerImage");
@@ -138,21 +136,9 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             if (!straightOrReverse)
                 DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Question }, new List<string>() { Answer }, new List<string>() { AbsoluteQuestionImagePath }, new List<string>() { AbsoluteAnswerImagePath });
-                //Card.SaveThisCard(Question, Answer, AbsoluteQuestionImagePath, AbsoluteAnswerImagePath);
             else
                 DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Question }, new List<string>() { Answer }, new List<string>() { AbsoluteAnswerImagePath }, new List<string>() { AbsoluteQuestionImagePath });
 
-            //Card.SaveThisCard(Answer, Question, AbsoluteAnswerImagePath, AbsoluteQuestionImagePath);
-            //Изображение сохранено в колоду и теперь может быть перезагружено из неё
-            //AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.parentDeck.Name, Card.RelativeToDeckFolderAnswerImagePath);
-            //AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.parentDeck.Name, Card.RelativeToDeckFolderQuestionImagePath);
-            //AnswerImage = CreateImageWithFullPath(AbsoluteAnswerImagePath);            
-            //QuestionImage = CreateImageWithFullPath(AbsoluteQuestionImagePath);
-            //OnPropertyChanged("AnswerImage");
-            //OnPropertyChanged("QuestionImage");
-            //OnPropertyChanged("Answer");
-            //OnPropertyChanged("Question");
-            //OnPropertyChanged("NameOfCard");
             MakeCardViewModelFromCardModel(Card, straightOrReverse);
         }
         public void LoadImages()
@@ -160,19 +146,6 @@ namespace Leitner_System_Transfered_2.ViewModel
                 AnswerImage = CreateImageWithFullPath(AbsoluteAnswerImagePath);
                 QuestionImage = CreateImageWithFullPath(AbsoluteQuestionImagePath);
                 
-        }
-        private CardViewModel(CardViewModel example)
-        {
-            this.Question = example.Question;
-            this.Answer = example.Answer;
-            this.AnswerImage = example.AnswerImage;
-            this.QuestionImage = example.QuestionImage;
-            this.AbsoluteAnswerImagePath = example.AbsoluteAnswerImagePath;
-            this.AbsoluteQuestionImagePath = example.AbsoluteQuestionImagePath;
-            this.LastRepititionTime = example.LastRepititionTime;
-            this.LastReverseRepititionTime = example.LastReverseRepititionTime;
-            this.RepitionFrequensy = example.RepitionFrequensy;
-            this.ReverseRepitionFrequensy = example.ReverseRepitionFrequensy;
         }
         public override string ToString()
         {
@@ -212,13 +185,6 @@ namespace Leitner_System_Transfered_2.ViewModel
                     stream.Close();
                     return bitmap;
                 }
-                
-            //}
-            //catch(Exception e)
-            //{
-            //    MessageBox.Show("Не удалось сохдать изображение " + e.Message);
-            //    return null;
-            //}
         }
         public void UpdateQuestionImage(string absoluteImagePath)
         {

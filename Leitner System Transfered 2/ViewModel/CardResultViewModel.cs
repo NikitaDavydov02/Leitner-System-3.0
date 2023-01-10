@@ -11,7 +11,7 @@ namespace Leitner_System_Transfered_2.ViewModel
     {
         public string Name { get; set; }
         public Card Card { get; set; }
-        public int Result
+        public Result Result
         {
             get { return result; }
             set 
@@ -20,24 +20,24 @@ namespace Leitner_System_Transfered_2.ViewModel
                 OnCardResultChanged(Card,value);
             }
         }
-        private int result;
+        private Result result;
 
         public EventHandler CardResultChanged;
-        public void OnCardResultChanged(Card card, int indexOfResult)
+        public void OnCardResultChanged(Card card, Result result)
         {
             EventHandler handler = CardResultChanged;
             if (handler != null)
-                handler(this, new CardResultChangedEventArgs(card,indexOfResult));
+                handler(this, new CardResultChangedEventArgs(card,result));
         }
     }
     public class CardResultChangedEventArgs : EventArgs 
     { 
         public Card Card { get; set; }
-        public int IndexOfResult { get; set; }
-        public CardResultChangedEventArgs(Card card, int indexOfResult)
+        public Result result { get; set; }
+        public CardResultChangedEventArgs(Card card, Result result)
         {
             Card = card;
-            IndexOfResult = indexOfResult;
+            this.result = result;
         }
     }
 

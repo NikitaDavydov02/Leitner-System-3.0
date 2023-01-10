@@ -149,7 +149,7 @@ namespace Leitner_System_Transfered_2.ViewModel
             if (eventArgs != null)
             {
                 Card card = eventArgs.Card;
-                int newResult = eventArgs.IndexOfResult;
+                Result newResult = eventArgs.result;
                 trainingModel.UpdateResultOfCard(card, newResult);
             }
         }

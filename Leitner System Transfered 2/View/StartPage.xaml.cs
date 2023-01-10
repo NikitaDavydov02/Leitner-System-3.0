@@ -112,9 +112,13 @@ namespace Leitner_System_Transfered_2.View
         {
             viewModel.UpdateCurrentSelectedCard(cardsInDeck.SelectedIndex);
         }
+        private int initialIndexInDeckList = -1;
         private void decksList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            viewModel.UpdateCurrentDeckIndex(decksList.SelectedIndex);
+            if(!viewModel.UpdateCurrentDeckIndex(decksList.SelectedIndex))
+                decksList.SelectedIndex = initialIndexInDeckList;
+            else
+                initialIndexInDeckList = decksList.SelectedIndex;
         }
         private void deckSaveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -364,7 +368,7 @@ namespace Leitner_System_Transfered_2.View
         }
         public bool CheckForUnsavedChanges()
         {
-            return viewModel.CheckForUnsavedCards();
+            return !viewModel.CheckForUnsavedCardsDoWeContinue();
         }
 
         private void findCard_TextChanged(object sender, TextChangedEventArgs e)

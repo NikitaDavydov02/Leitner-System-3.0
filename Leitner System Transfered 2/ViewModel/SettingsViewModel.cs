@@ -73,7 +73,7 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         public void AddTrainingTemplate()
         {
-            TrainingTemplate t = SettingsModel.CreateDefault();
+            TrainingTemplate t = SettingsModel.GetDefaultTrainingTemplate();
  
             SettingsModel.TrainingTemplates.Add(t);
             TrainingTemplates.Add(CreaterainingTemplateViewModel(t));
@@ -89,7 +89,10 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         public void DeleteSelectedTemplates(List<int> indexesOfTemplatesToDelete)
         {
-            SettingsModel.DeleteSelectedTemplates(indexesOfTemplatesToDelete);
+            List<TrainingTemplate> tempaltesToDelete = new List<TrainingTemplate>();
+            foreach (int i in indexesOfTemplatesToDelete)
+                tempaltesToDelete.Add(TrainingTemplates[i].trainingTemplate);
+            SettingsModel.DeleteSelectedTemplates(tempaltesToDelete);
             ReloadTemplateList();
         }
     }

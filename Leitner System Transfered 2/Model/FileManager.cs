@@ -36,7 +36,7 @@ namespace Leitner_System_Transfered_2.Model
         //public async static Task<Deck> ReadDeckFromDeckFolderWithFullPathAsync(string absolutePathOfFolderWithDecks)
         //{
         //   return await Task.Run(() => ReadDeckFromDeckFolderWithFullPath(absolutePathOfFolderWithDecks));
-        //}
+        //}b
         public static List<Deck> GetDecksFromFolder(string absolutePathOfFolderWithDecks = "")
         {
             if (String.IsNullOrEmpty(absolutePathOfFolderWithDecks))
@@ -47,7 +47,7 @@ namespace Leitner_System_Transfered_2.Model
             if (!Directory.Exists(absolutePathOfFolderWithDecks))
             {
                 MessageBox.Show("Folder " +absolutePathOfFolderWithDecks +" was not found.");
-                return null;
+                return output;
             }
             currentFolderWithDecksFullPath = absolutePathOfFolderWithDecks;
             IEnumerable<string> decksDirectoriesNames = Directory.EnumerateDirectories(absolutePathOfFolderWithDecks);
@@ -59,27 +59,23 @@ namespace Leitner_System_Transfered_2.Model
                 else
                     MessageBox.Show("Reading of deck from " + deckDirectoryName + "was not sucssesful.");
             }
-            foreach(Deck deck in output)
-                deck.SetParentDeckToCards();
             MakeBackupOfDecksFromCurrentFolder(output);
             return output;
         }
-        public static void UploadSettings()
+        private static void CreateDefaultSettings()
         {
-            string path = Path.Combine(Environment.CurrentDirectory, "settings.xml");
-            if (!File.Exists(path))
-            {
-                //Default settings
-                SettingsModel defaultSettings= new SettingsModel();
-                settings = defaultSettings;
-                settings.AbsolutePathOfBackupFolder = defaultBackupFolder;
-                settings.AbsolutePathOfSaveDeckFolder = defaultFolderWithDecksPath;
-                settings.CurrentTrainingTemplate = -1;
-                settings.MakeBackup = false;
-                settings.TrainingTemplates = new List<TrainingTemplate>();
-                settings.TrainingTemplates.Add(settings.CreateDefault());
-                SaveSettings();
-            }
+            SettingsModel defaultSettings = new SettingsModel();
+            settings = defaultSettings;
+            settings.AbsolutePathOfBackupFolder = defaultBackupFolder;
+            settings.AbsolutePathOfSaveDeckFolder = defaultFolderWithDecksPath;
+            settings.CurrentTrainingTemplate = -1;
+            settings.MakeBackup = false;
+            settings.TrainingTemplates = new List<TrainingTemplate>();
+            settings.TrainingTemplates.Add(settings.GetDefaultTrainingTemplate());
+            SaveSettings();
+        }
+        private static void ReadExistingSettings(string path)
+        {
             try
             {
                 using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
@@ -99,6 +95,14 @@ namespace Leitner_System_Transfered_2.Model
             {
                 MessageBox.Show("Settings was not found in " + path);
             }
+        }
+        public static void UploadSettings()
+        {
+            string path = Path.Combine(Environment.CurrentDirectory, "settings.xml");
+            if (!File.Exists(path))
+                CreateDefaultSettings();
+            else
+                ReadExistingSettings(path);
         }
         public static void SaveSettings()
         {
@@ -174,19 +178,7 @@ namespace Leitner_System_Transfered_2.Model
             Excel.Application application = new Excel.Application();
             application.Workbooks.Add();
             Excel.Worksheet workSheet = application.ActiveSheet;
-            //try
-            //{
-
-            //    workbook = application.Workbooks.Open(absoluteFilePath);
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Не удалось импортировать файл " + absoluteFilePath + "\n" + "\n" + ex.Message + "\n" + "\n" + "Проверьте файловую систему");
-            //    return null;
-            //}
-            //Workbook wb = new Workbook();
-            //Worksheet sheet = wb.Worksheets[0];
+            
             for (int i = 0; i < input.Count; i++)
             {
                 workSheet.Cells[i + 1, "A"] = input.Keys.ElementAt(i);
@@ -199,7 +191,6 @@ namespace Leitner_System_Transfered_2.Model
                 workSheet.SaveAs(absoluteFilePath);
                 application.Quit();
                 System.Runtime.InteropServices.Marshal.ReleaseComObject(application);
-                //wb.Save(absoluteFilePath, SaveFormat.Xlsx);
             }
             catch (Exception ex)
             {
@@ -349,17 +340,14 @@ namespace Leitner_System_Transfered_2.Model
             folderForCurrentBackupPath = path;
             Directory.CreateDirectory(folderForCurrentBackupPath);
             foreach (Deck deck in decksToBackup)
-            {
                 SaveDeckOrUpdateDeckFile(deck, folderForCurrentBackupPath);
-
-            }
         }
         ///<summary>
         ///Rename deck folder, file, and deck itself. If the process was faild return false and true in opposite case
         ///</summary>
         ///<param name="newName">New name of deck</param>
         ///<param name="deckNameToRename">Deck name that will be renamed</param>
-        public static bool UpdateNameOfDeckDeckFileAndDeckFolder(string newName, string deckNameToRename)
+        public static bool UpdateNameOfDeckDeckFileAndDeckFolder(Deck deck,string newName)
         {
             if (String.IsNullOrEmpty(newName))
             {
@@ -376,9 +364,9 @@ namespace Leitner_System_Transfered_2.Model
                 MessageBox.Show("Forbiden file name");
                 return false;
             }
-            if (newName == deckNameToRename)
+            if (newName == deck.Name)
                 return false;
-            string deckOldFolderPath = Path.Combine(currentFolderWithDecksFullPath, deckNameToRename);
+            string deckOldFolderPath = Path.Combine(currentFolderWithDecksFullPath, deck.Name);
             string deckNewFolderPath = Path.Combine(currentFolderWithDecksFullPath, newName);
             if (Directory.Exists(deckNewFolderPath))
             {
@@ -420,9 +408,7 @@ namespace Leitner_System_Transfered_2.Model
         {
             if (!Directory.Exists(Path.Combine(currentFolderWithDecksFullPath, deckToDeleteName)))
                 return;
-            MessageBoxResult result = MessageBox.Show("Do you want to delete this deck?", "", MessageBoxButton.YesNo);
-            if (result != MessageBoxResult.Yes)
-                return;
+            
             string[] files = Directory.GetFiles(Path.Combine(currentFolderWithDecksFullPath, deckToDeleteName));
             foreach (string fileName in files)
                 File.Delete(fileName);
@@ -436,14 +422,14 @@ namespace Leitner_System_Transfered_2.Model
         {
             relativeQuestionImagePath = "";
             relativeAnswerImagePath = "";
-            string oldQuestionImageAbsolitePath = Path.Combine(currentFolderWithDecksFullPath, currentCard.parentDeck.Name, currentCard.RelativeToDeckFolderQuestionImagePath);
-            string oldAnswerImageAbsolitePath = Path.Combine(currentFolderWithDecksFullPath, currentCard.parentDeck.Name, currentCard.RelativeToDeckFolderAnswerImagePath);
+            string oldQuestionImageAbsolitePath = Path.Combine(currentFolderWithDecksFullPath, currentCard.ParentDeck.Name, currentCard.RelativeToDeckFolderQuestionImagePath);
+            string oldAnswerImageAbsolitePath = Path.Combine(currentFolderWithDecksFullPath, currentCard.ParentDeck.Name, currentCard.RelativeToDeckFolderAnswerImagePath);
             if (questionAbsoluteImagePath != oldQuestionImageAbsolitePath)
             {
                 if (File.Exists(oldQuestionImageAbsolitePath))
                     File.Delete(oldQuestionImageAbsolitePath);
                 if (!String.IsNullOrEmpty(questionAbsoluteImagePath))
-                    relativeQuestionImagePath = CopyImageFileToDeckFolderAndReturnRelativeToDeckFolderPath(questionAbsoluteImagePath, true, currentCard.parentDeck.Name);
+                    relativeQuestionImagePath = CopyImageFileToDeckFolderAndReturnRelativeToDeckFolderPath(questionAbsoluteImagePath, true, currentCard.ParentDeck.Name);
             }
             else
                 relativeQuestionImagePath = currentCard.RelativeToDeckFolderQuestionImagePath;
@@ -452,7 +438,7 @@ namespace Leitner_System_Transfered_2.Model
                 if (File.Exists(oldAnswerImageAbsolitePath))
                     File.Delete(oldAnswerImageAbsolitePath);
                 if (!String.IsNullOrEmpty(answerAbsoluteImagePath))
-                    relativeAnswerImagePath = CopyImageFileToDeckFolderAndReturnRelativeToDeckFolderPath(answerAbsoluteImagePath, false, currentCard.parentDeck.Name);
+                    relativeAnswerImagePath = CopyImageFileToDeckFolderAndReturnRelativeToDeckFolderPath(answerAbsoluteImagePath, false, currentCard.ParentDeck.Name);
             }
             else
                 relativeAnswerImagePath = currentCard.RelativeToDeckFolderAnswerImagePath;

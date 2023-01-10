@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Leitner_System_Transfered_2.View"
         mc:Ignorable="d"
-        Title="Leitner System 3.0.1" Height="450" Width="800">
+        Title="Leitner System 3.0.1" Height="450" Width="800" Closing="Window_Closing">
     <Grid>
         
     </Grid>

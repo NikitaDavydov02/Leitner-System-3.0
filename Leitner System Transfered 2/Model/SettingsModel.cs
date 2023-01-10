@@ -26,7 +26,7 @@ namespace Leitner_System_Transfered_2.Model
         public int CurrentTrainingTemplate { get; set; }
 
         List<TrainingTemplate> buffer = new List<TrainingTemplate>();
-        public TrainingTemplate CreateDefault()
+        public TrainingTemplate GetDefaultTrainingTemplate()
         {
             TrainingTemplate output = new TrainingTemplate();
             output.maxCardsCount = 100;
@@ -55,17 +55,11 @@ namespace Leitner_System_Transfered_2.Model
                 TrainingTemplates.Add(templateCopy);
             }
         }
-        public void DeleteSelectedTemplates(List<int> indexesOfTemplatesToDelete)
+        public void DeleteSelectedTemplates(List<TrainingTemplate> templatesToRemove)
         {
             TrainingTemplate currentTemplate = null;
             if (CurrentTrainingTemplate >= 0 && CurrentTrainingTemplate < TrainingTemplates.Count)
                 currentTemplate = TrainingTemplates[CurrentTrainingTemplate];
-            List<TrainingTemplate> templatesToRemove = new List<TrainingTemplate>();
-            foreach (int i in indexesOfTemplatesToDelete)
-            {
-                if(i>=0&&i<TrainingTemplates.Count)
-                    templatesToRemove.Add(TrainingTemplates[i]);
-            }
             foreach (TrainingTemplate template in templatesToRemove)
                 TrainingTemplates.Remove(template);
             if (currentTemplate != null)

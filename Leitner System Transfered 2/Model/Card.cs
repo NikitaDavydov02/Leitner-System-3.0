@@ -36,7 +36,7 @@ namespace Leitner_System_Transfered_2.Model
         public DateTime LastReverseRepetitionTime { get; private set; }
         [DataMember]
         public RepitionFrequensy ReverseRepitionFrequensy { get; private set; }
-        public Deck parentDeck { get; set; }
+        public Deck ParentDeck { get; set; }
         //--------------------------------------------------------------------------------
         //------------------------------------- METHODS ---------------------------------
         //--------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Leitner_System_Transfered_2.Model
         /// <param name="relativeToDeckFolderQuestionImagePath">Relative to deck folder path of question image</param>
         public Card(Deck parentDeck, string question, string answer, string relativeToDeckFolderAnswerImagePath="", string relativeToDeckFolderQuestionImagePath = "")
         {
-            this.parentDeck = parentDeck;
+            this.ParentDeck = parentDeck;
             Question = question;
             Answer = answer;
             RelativeToDeckFolderQuestionImagePath = relativeToDeckFolderQuestionImagePath;
@@ -67,33 +67,6 @@ namespace Leitner_System_Transfered_2.Model
             RelativeToDeckFolderQuestionImagePath = relativeToDeckFolderQuestionImagePath;
             RelativeToDeckFolderAnswerImagePath = relativeToDeckFolderAnswerImagePath;
         }
-        /// <summary>
-        /// Set parent deck property of this card
-        /// </summary>
-        /// <param name="deck"></param>
-        //public void SetPerentDeck(Deck deck)
-        //{
-        //    this.parentDeck = deck;
-        //}
-        /// <summary>
-        /// Save new values of fileds of this card, copy images from its initial locations to deck folder
-        /// </summary>
-        /// <param name="question">new question of this card</param>
-        /// <param name="answer">new answer of this card</param>
-        /// <param name="absoluteQuestionImagePath">absolute path of new question image</param>
-        /// <param name="absoluteAnswerImagePath">absolute path of new answer image</param>
-        //public void SaveThisCard(string question, string answer, string absoluteQuestionImagePath, string absoluteAnswerImagePath)
-        //{
-        //    string relativeToDeckFolderQuestionImagePath = "";
-        //    string relativeToDeckFolderAnswerImagePath = "";
-        //    if (!String.IsNullOrEmpty(absoluteAnswerImagePath) || !String.IsNullOrEmpty(absoluteQuestionImagePath))
-        //        FileManager.CopyNewImagesToDeckFolder(this, absoluteQuestionImagePath, absoluteAnswerImagePath, out relativeToDeckFolderAnswerImagePath, out relativeToDeckFolderQuestionImagePath);
-        //    Question = question;
-        //    Answer = answer;
-        //    RelativeToDeckFolderQuestionImagePath = relativeToDeckFolderQuestionImagePath;
-        //    RelativeToDeckFolderAnswerImagePath = relativeToDeckFolderAnswerImagePath;
-        //    FileManager.SaveDeckOrUpdateDeckFile(parentDeck);//dsdvs
-        //}
         ///<summary>
         ///Update last repitition time by answer 
         ///</summary>

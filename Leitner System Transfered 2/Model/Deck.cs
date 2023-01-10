@@ -46,7 +46,7 @@ namespace Leitner_System_Transfered_2.Model
         public void SetParentDeckToCards()
         {
             foreach (Card card in Cards)
-                card.parentDeck=this;
+                card.ParentDeck=this;
         }
         /// <summary>
         /// Change name of this deck
@@ -54,7 +54,7 @@ namespace Leitner_System_Transfered_2.Model
         /// <param name="newName">New name of this deck</param>
         public void Rename(string newName)
         {
-            if (!FileManager.UpdateNameOfDeckDeckFileAndDeckFolder(newName, Name))
+            if (!FileManager.UpdateNameOfDeckDeckFileAndDeckFolder(this, newName))
                 return;
             Name = newName;
             FileManager.SaveDeckOrUpdateDeckFile(this);
@@ -72,17 +72,10 @@ namespace Leitner_System_Transfered_2.Model
         /// Delete determined cards from list from this deck and save deck after this
         /// </summary>
         /// <param name="card">Card to delete</param>
-        public void DeleteSelectedCard(List<int> indexesOfCardToDelete)
+        public void DeleteSelectedCard(List<Card> cardsToRemove)
         {
-            List<Card> cardsToRemove = new List<Card>();
-            foreach (int i in indexesOfCardToDelete)
-                cardsToRemove.Add(Cards[i]);
-            int removingIndex;
             foreach (Card card in cardsToRemove)
-            {
-                removingIndex = Cards.IndexOf(card);
-                Cards.RemoveAt(removingIndex);
-            }
+                Cards.Remove(card);
             FileManager.SaveDeckOrUpdateDeckFile(this);
         }
     }
