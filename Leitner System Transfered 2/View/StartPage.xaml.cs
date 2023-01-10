@@ -363,8 +363,9 @@ namespace Leitner_System_Transfered_2.View
 
         private void ReverseSetting_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            IValueConverter converter = new ReverseSettingsToIntegerConverter();
             if (viewModel != null)
-                viewModel.GeneralReverseSettingsChanged(ReverseSetting.SelectedIndex);
+                viewModel.GeneralReverseSettingsChanged((Model.ReverseSettings)converter.ConvertBack(ReverseSetting.SelectedIndex,Type.GetType(""),"",System.Globalization.CultureInfo.CurrentCulture));
         }
         public bool CheckForUnsavedChanges()
         {

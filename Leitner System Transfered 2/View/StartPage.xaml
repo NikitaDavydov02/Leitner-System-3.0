@@ -14,6 +14,7 @@
         <BooleanToVisibilityConverter x:Key="visibilityConverter"/>
         <viewmodel:BooleanNotConverter x:Key="notConverter"/>
         <viewmodel:IntegerToVisibilityConverter x:Key="integerToVisibilityConverter"/>
+        <viewmodel:ReverseSettingsToIntegerConverter x:Key="reverseSettingsToIntegerConverter"/>
     </Page.Resources>
     <Page.CommandBindings>
         <CommandBinding x:Name="Copy" Command="ApplicationCommands.Copy" CanExecute="Copy_CanExecute" Executed="Copy_Executed"/>
@@ -96,7 +97,7 @@
 
                             <TextBlock Text="{Binding DeckName}" Grid.Row="0" Grid.Column="1" Margin="10 0"/>
                             <TextBlock Text="{Binding Count}" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" Margin="10 0"/>
-                            <ComboBox x:Name="ReverseSetting" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="3" Margin="15 2" Style="{DynamicResource ComboBoxStyle1}" SelectionChanged="ReverseSetting_SelectionChanged" SelectedIndex="{Binding ReverseSetting}" IsEnabled="{Binding  ReverseSettingChangingEnable}" Grid.ColumnSpan="2">
+                            <ComboBox x:Name="ReverseSetting" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="3" Margin="15 2" Style="{DynamicResource ComboBoxStyle1}" SelectionChanged="ReverseSetting_SelectionChanged" SelectedIndex="{Binding ReverseSetting, Mode=OneWay, Converter={StaticResource reverseSettingsToIntegerConverter}}" IsEnabled="{Binding  ReverseSettingChangingEnable}" Grid.ColumnSpan="2">
                                 <ComboBoxItem Content="Straight" FontSize="8" Style="{DynamicResource ComboBoxItemStyle1}"/>
                                 <ComboBoxItem Content="Reverse" Style="{DynamicResource ComboBoxItemStyle1}"/>
                                 <ComboBoxItem Content="Random" FontSize="8"  Style="{DynamicResource ComboBoxItemStyle1}"/>
@@ -124,7 +125,7 @@
                 <Image  x:Name="deleteDeckButtonImage"/>
             </Button>
         </Grid>
-        <Button x:Name="startTraining" Grid.Column="0" Grid.Row="4" Click="startTraining_Click" Content="Начать тренировку!" Style="{DynamicResource PurpleButtonWithText}">
+        <Button x:Name="startTraining" Grid.Column="0" Grid.Row="4" Click="startTraining_Click" Content="Start training!" Style="{DynamicResource PurpleButtonWithText}">
             <!--<Button.Effect>
                 <DropShadowEffect Color="White" BlurRadius="20" ShadowDepth="0"/>
             </Button.Effect>-->

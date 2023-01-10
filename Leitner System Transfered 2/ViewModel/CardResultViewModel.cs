@@ -33,11 +33,11 @@ namespace Leitner_System_Transfered_2.ViewModel
     public class CardResultChangedEventArgs : EventArgs 
     { 
         public Card Card { get; set; }
-        public Result result { get; set; }
+        public Result Result { get; set; }
         public CardResultChangedEventArgs(Card card, Result result)
         {
             Card = card;
-            this.result = result;
+            Result = result;
         }
     }
 

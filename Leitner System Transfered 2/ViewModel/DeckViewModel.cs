@@ -11,10 +11,16 @@ namespace Leitner_System_Transfered_2.ViewModel
 {
     public class DeckViewModel:INotifyPropertyChanged
     {
-        public string DeckName { get; set; }
+        private string deckName;
+        public string DeckName
+        {
+            get { return Deck.Name; }
+            set { deckName = value; }
+        }
+        
         public bool DeckIsSelectedForTraining { get; set; }
         public bool ReverseSettingChangingEnable { get; private set; }
-        public int ReverseSetting { get; set; } = 0;
+        public ReverseSettings ReverseSetting { get; set; } = 0;
         private int count;
         public int Count
         {
@@ -55,9 +61,9 @@ namespace Leitner_System_Transfered_2.ViewModel
             DeckIsSelectedForTraining = value;
             OnPropertyChanged("DeckIsSelectedForTraining");
         }
-        public void ChangeReverseOfDeck(int newReverseSettings)
+        public void ChangeReverseOfDeck(ReverseSettings reverseSettings)
         {
-            ReverseSetting = newReverseSettings;
+            ReverseSetting = reverseSettings;
             OnPropertyChanged("ReverseSetting");
         }
         public void ChangeReverseChangingEnableOfDeck(bool newValue)
@@ -67,7 +73,8 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         public void SaveRenameThisDeck()
         {
-            Deck.Rename(DeckName);
+            Deck.Rename(deckName);
+            //DeckName = Deck.Name;
             OnPropertyChanged("DeckName");
         }
     }

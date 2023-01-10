@@ -59,6 +59,12 @@ namespace Leitner_System_Transfered_2.ViewModel
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
+        //public void RenameCurrentDeckSave()
+        //{
+        //    if (CurrentDeck == null|| !CheckForUnsavedCardsDoWeContinue())
+        //        return;
+        //    CurrentDeck.Rename();
+        //}
         /// <summary>
         /// Update displaied deck list
         /// </summary>
@@ -173,9 +179,9 @@ namespace Leitner_System_Transfered_2.ViewModel
                 Cards.Remove(cardViewModel);
             CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
         }
-        private Dictionary<Deck,int> GetDecksForTraining()
+        private Dictionary<Deck,ReverseSettings> GetDecksForTraining()
         {
-            Dictionary<Deck, int> output = new Dictionary<Deck, int>();
+            Dictionary<Deck, ReverseSettings> output = new Dictionary<Deck, ReverseSettings>();
             foreach (DeckViewModel deckViewModel in Decks)
                 if (deckViewModel.DeckIsSelectedForTraining)
                     output.Add(deckViewModel.Deck,deckViewModel.ReverseSetting);
@@ -202,37 +208,16 @@ namespace Leitner_System_Transfered_2.ViewModel
             foreach (DeckViewModel deckViewModel in Decks)
                 deckViewModel.SelectDeck(!allDecksAreSelected);
         }
-        public void GeneralReverseSettingsChanged(int newGeneralSettings)
+        public void GeneralReverseSettingsChanged(ReverseSettings newGeneralSettings)
         {
-            switch (newGeneralSettings)
+            bool reverseChangingEnable = false;
+            if (newGeneralSettings == ReverseSettings.Manual)
+                reverseChangingEnable = true;
+            foreach (DeckViewModel deckViewModel in Decks)
             {
-                case 0:
-                    foreach (DeckViewModel deckViewModel in Decks)
-                    {
-                        deckViewModel.ChangeReverseOfDeck(0);
-                        deckViewModel.ChangeReverseChangingEnableOfDeck(false);
-                    }
-                    break;
-                case 1:
-                    foreach (DeckViewModel deckViewModel in Decks)
-                    {
-                        deckViewModel.ChangeReverseOfDeck(1);
-                        deckViewModel.ChangeReverseChangingEnableOfDeck(false);
-                    }
-                    break;
-                case 2:
-                    foreach (DeckViewModel deckViewModel in Decks)
-                    {
-                        deckViewModel.ChangeReverseOfDeck(2);
-                        deckViewModel.ChangeReverseChangingEnableOfDeck(false);
-                    }
-                    break;
-                case 3:
-                    foreach (DeckViewModel deckViewModel in Decks)
-                    {
-                        deckViewModel.ChangeReverseChangingEnableOfDeck(true);
-                    }
-                    break;
+                if(newGeneralSettings!=ReverseSettings.Manual)
+                    deckViewModel.ChangeReverseOfDeck(newGeneralSettings);
+                deckViewModel.ChangeReverseChangingEnableOfDeck(reverseChangingEnable);
             }
         }
         public void CopyCardsInBuffer(List<int> indexesOfSelectedCards)

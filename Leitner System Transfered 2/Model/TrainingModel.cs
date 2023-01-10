@@ -46,7 +46,7 @@ namespace Leitner_System_Transfered_2.Model
         /// <param name="trainingDecks"></param>
         /// <param name="fullFolderWithDecksPath"></param>
         /// <param name="model"></param>
-        public TrainingModel(Dictionary<Deck,int> trainingDecksWithReverseSettings)
+        public TrainingModel(Dictionary<Deck,ReverseSettings> trainingDecksWithReverseSettings)
         {
             //Find cuurent training template
             if (FileManager.settings.CurrentTrainingTemplate != -1)
@@ -82,7 +82,7 @@ namespace Leitner_System_Transfered_2.Model
         /// <summary>
         /// Select appropriate training cards from training decks
         /// </summary>
-        private Dictionary<Card, bool> SelectTrainingCardsFromDeck(Dictionary<Deck, int> trainingDecksWithReverse)
+        private Dictionary<Card, bool> SelectTrainingCardsFromDeck(Dictionary<Deck, ReverseSettings> trainingDecksWithReverse)
         {
             if (trainingDecksWithReverse == null)
                 return null;
@@ -91,12 +91,12 @@ namespace Leitner_System_Transfered_2.Model
             foreach (Deck deck in trainingDecksWithReverse.Keys.ToList())
                 foreach(Card card in deck.Cards)
                 {
-                    if(trainingDecksWithReverse[deck]==0)
+                    if(trainingDecksWithReverse[deck]==ReverseSettings.Straight)
                     {
                         if (card.CardIsAppropriateForTraining(true))
                             cardsWithReverse.Add(card, false);
                     }
-                    else if(trainingDecksWithReverse[deck] == 1)
+                    else if(trainingDecksWithReverse[deck] == ReverseSettings.Reverse)
                     {
                         if (card.CardIsAppropriateForTraining(false))
                             cardsWithReverse.Add(card, true);
@@ -270,5 +270,12 @@ namespace Leitner_System_Transfered_2.Model
         Right,
         Wrong,
         Delete,
+    }
+    public enum ReverseSettings
+    {
+        Straight,
+        Reverse,
+        Random,
+        Manual,
     }
 }

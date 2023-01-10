@@ -82,11 +82,11 @@ namespace Leitner_System_Transfered_2.ViewModel
             int wrongAnswers = 0;
             int correctAnswers = 0;
             //Statistics
-            foreach(int i in trainingModel.Results.Values)
+            foreach(Result i in trainingModel.Results.Values)
             {
-                if (i == 1)
+                if (i==Result.Right)
                     correctAnswers++;
-                else if (i == 2)
+                else if (i == Result.Wrong)
                     wrongAnswers++;
             }
             CorrectAnswersCount = correctAnswers.ToString();
@@ -149,7 +149,7 @@ namespace Leitner_System_Transfered_2.ViewModel
             if (eventArgs != null)
             {
                 Card card = eventArgs.Card;
-                Result newResult = eventArgs.result;
+                Result newResult = eventArgs.Result;
                 trainingModel.UpdateResultOfCard(card, newResult);
             }
         }
