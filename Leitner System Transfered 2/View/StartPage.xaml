@@ -101,7 +101,7 @@
                                 <ComboBoxItem Content="Straight" FontSize="8" Style="{DynamicResource ComboBoxItemStyle1}"/>
                                 <ComboBoxItem Content="Reverse" Style="{DynamicResource ComboBoxItemStyle1}"/>
                                 <ComboBoxItem Content="Random" FontSize="8"  Style="{DynamicResource ComboBoxItemStyle1}"/>
-                                <ComboBoxItem Content="Manual" FontSize="8"  Style="{DynamicResource ComboBoxItemStyle1}"/>
+                                <!--<ComboBoxItem Content="Manual" FontSize="8"  Style="{DynamicResource ComboBoxItemStyle1}"/>-->
                             </ComboBox>
                         </Grid>
                     </DataTemplate>

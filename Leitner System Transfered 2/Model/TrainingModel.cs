@@ -79,24 +79,19 @@ namespace Leitner_System_Transfered_2.Model
             }
             return inputList;
         }
-        /// <summary>
-        /// Select appropriate training cards from training decks
-        /// </summary>
-        private Dictionary<Card, bool> SelectTrainingCardsFromDeck(Dictionary<Deck, ReverseSettings> trainingDecksWithReverse)
+        private Dictionary<Card, bool> SelectCardsThatCanBeRepeated(Dictionary<Deck, ReverseSettings> trainingDecksWithReverse)
         {
-            if (trainingDecksWithReverse == null)
-                return null;
             Dictionary<Card, bool> cardsWithReverse = new Dictionary<Card, bool>();
             Random random = new Random();
             foreach (Deck deck in trainingDecksWithReverse.Keys.ToList())
-                foreach(Card card in deck.Cards)
+                foreach (Card card in deck.Cards)
                 {
-                    if(trainingDecksWithReverse[deck]==ReverseSettings.Straight)
+                    if (trainingDecksWithReverse[deck] == ReverseSettings.Straight)
                     {
                         if (card.CardIsAppropriateForTraining(true))
                             cardsWithReverse.Add(card, false);
                     }
-                    else if(trainingDecksWithReverse[deck] == ReverseSettings.Reverse)
+                    else if (trainingDecksWithReverse[deck] == ReverseSettings.Reverse)
                     {
                         if (card.CardIsAppropriateForTraining(false))
                             cardsWithReverse.Add(card, true);
@@ -114,13 +109,22 @@ namespace Leitner_System_Transfered_2.Model
                             if (card.CardIsAppropriateForTraining(false))
                                 cardsWithReverse.Add(card, true);
                         }
-
                     }
                 }
+            return cardsWithReverse;
+        }
+        /// <summary>
+        /// Select appropriate training cards from training decks
+        /// </summary>
+        private Dictionary<Card, bool> SelectTrainingCardsFromDeck(Dictionary<Deck, ReverseSettings> trainingDecksWithReverse)
+        {
+            if (trainingDecksWithReverse == null)
+                return null;
+            Dictionary<Card, bool> cardsWithReverse = SelectCardsThatCanBeRepeated(trainingDecksWithReverse);
+
             List<Card> sortedCards = new List<Card>();
             foreach (Card card in cardsWithReverse.Keys.ToList())
                 sortedCards.Add(card);
-            //Sort
             SortCardsListByDaysSinceCardSholdHaveBeenRepeated(sortedCards, cardsWithReverse);
 
             int numerOfCards = 0;
@@ -131,9 +135,6 @@ namespace Leitner_System_Transfered_2.Model
             Dictionary<Card, bool> output = new Dictionary<Card, bool>();
             for (int i = 0; i < numerOfCards; i++)
                 output.Add(sortedCards[i], cardsWithReverse[sortedCards[i]]);
-
-            //Упорядочить карты по времени с =о дня повторения
-            //Взять столько первых карт, сколько нужно для погашения задолженности за неделю плюс сколько в среднем добавляешь, но так, чтобы меньше определенноо=го максимума
             return output;
         }
         private void SortCardsListByDaysSinceCardSholdHaveBeenRepeated(List<Card> sortedCards, Dictionary<Card,bool> cardsWithReverse)
