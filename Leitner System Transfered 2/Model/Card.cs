@@ -25,9 +25,9 @@ namespace Leitner_System_Transfered_2.Model
         [DataMember]
         public string Answer { get; private set; }
         [DataMember]
-        public string RelativeToDeckFolderQuestionImagePath { get; private set; }
+        public string RelativeToFoderWithDecksQuestionImagePath { get; private set; }
         [DataMember]
-        public string RelativeToDeckFolderAnswerImagePath { get; private set; }
+        public string RelativeToFoderWithDecksAnswerImagePath { get; private set; }
         [DataMember]
         public DateTime LastRepetitionTime { get; private set; }
         [DataMember]
@@ -48,24 +48,24 @@ namespace Leitner_System_Transfered_2.Model
         /// <param name="answer">Answer of this card</param>
         /// <param name="relativeToDeckFolderAnswerImagePath">Relative to deck folder path of answer image</param>
         /// <param name="relativeToDeckFolderQuestionImagePath">Relative to deck folder path of question image</param>
-        public Card(Deck parentDeck, string question, string answer, string relativeToDeckFolderAnswerImagePath="", string relativeToDeckFolderQuestionImagePath = "")
+        public Card(Deck parentDeck, string question, string answer, string relativeToFoderWithDecksAnswerImagePath = "", string relativeToFoderWithDecksQuestionImagePath = "")
         {
             this.ParentDeck = parentDeck;
             Question = question;
             Answer = answer;
-            RelativeToDeckFolderQuestionImagePath = relativeToDeckFolderQuestionImagePath;
-            RelativeToDeckFolderAnswerImagePath = relativeToDeckFolderAnswerImagePath;
+            RelativeToFoderWithDecksQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
+            RelativeToFoderWithDecksAnswerImagePath = relativeToFoderWithDecksAnswerImagePath;
             LastRepetitionTime = DateTime.Now;
             LastReverseRepetitionTime = DateTime.Now;
             RepitionFrequensy = RepitionFrequensy.Daily;
             ReverseRepitionFrequensy = RepitionFrequensy.Daily;
         }
-        public void SetNewFields(string question, string answer, string relativeToDeckFolderQuestionImagePath, string relativeToDeckFolderAnswerImagePath)
+        public void SetNewFields(string question, string answer, string relativeToFoderWithDecksQuestionImagePath, string relativeToFoderWithDecksAbswerImagePath)
         {
             Question = question;
             Answer = answer;
-            RelativeToDeckFolderQuestionImagePath = relativeToDeckFolderQuestionImagePath;
-            RelativeToDeckFolderAnswerImagePath = relativeToDeckFolderAnswerImagePath;
+            RelativeToFoderWithDecksQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
+            RelativeToFoderWithDecksAnswerImagePath = relativeToFoderWithDecksAbswerImagePath;
         }
         ///<summary>
         ///Update last repitition time by answer 

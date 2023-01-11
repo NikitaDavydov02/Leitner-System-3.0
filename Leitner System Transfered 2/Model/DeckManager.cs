@@ -55,7 +55,7 @@ namespace Leitner_System_Transfered_2.Model
         public static Deck CreateNewDeck()
         {
             //FileManager Should find name for deck by itself
-            Deck newDeck = new Deck(FileManager.FindNameForNewDeckFolderInCurrentFolderWithDecks());
+            Deck newDeck = new Deck(FileManager.FindNameForNewDeckInCurrentFolderWithDecks());
             Decks.Add(newDeck);
             FileManager.SaveDeckOrUpdateDeckFile(newDeck);
             return newDeck;
@@ -73,7 +73,7 @@ namespace Leitner_System_Transfered_2.Model
             }
             foreach (Deck deck in decksToRemove)
             {
-                FileManager.DeleteDeckFromCurrentFolder(deck.Name);
+                FileManager.DeleteDeckFromCurrentFolder(deck);
                 Decks.Remove(deck);
             }
             CurrentCard = null;
@@ -173,12 +173,12 @@ namespace Leitner_System_Transfered_2.Model
                 Card newCard = deck.CreateNewCard();
                 string answrAbsolutImagPath = "";
                 string qustionAbsolutImagPath = "";
-                if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderQuestionImagePath))
-                    qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.ParentDeck.Name, cardToCopy.RelativeToDeckFolderQuestionImagePath);
-                if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderAnswerImagePath))
-                    answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.ParentDeck.Name, cardToCopy.RelativeToDeckFolderAnswerImagePath);
+                if (!String.IsNullOrEmpty(cardToCopy.RelativeToFoderWithDecksQuestionImagePath))
+                    qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToFoderWithDecksQuestionImagePath);
+                if (!String.IsNullOrEmpty(cardToCopy.RelativeToFoderWithDecksAnswerImagePath))
+                    answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToFoderWithDecksAnswerImagePath);
                 SaveCards(new List<Card>() { newCard }, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<string>() { qustionAbsolutImagPath }, new List<string>() { answrAbsolutImagPath });
-
+                
             }
              FileManager.SaveDeckOrUpdateDeckFile(deck);
         }
@@ -201,7 +201,7 @@ namespace Leitner_System_Transfered_2.Model
             foreach (Deck deckToCopy in deckBuffer)
             {
                 Deck createdDeck = CreateNewDeck();
-                createdDeck.Rename(FileManager.FindNameForNewDeckFolderInCurrentFolderWithDecks(deckToCopy.Name + "_Copy"));
+                createdDeck.Rename(FileManager.FindNameForNewDeckInCurrentFolderWithDecks(deckToCopy.Name + "_Copy"));
                 CopyCardsToDeck(deckToCopy.Cards, CurrentDeck);
             }
         }

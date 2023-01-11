@@ -178,6 +178,8 @@ namespace Leitner_System_Transfered_2.ViewModel
             foreach (CardViewModel cardViewModel in cardsViewModelsToRemove)
                 Cards.Remove(cardViewModel);
             CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
+            CurrentCard = null;
+            OnPropertyChanged("CurrentCard");
         }
         private Dictionary<Deck,ReverseSettings> GetDecksForTraining()
         {
@@ -263,6 +265,7 @@ namespace Leitner_System_Transfered_2.ViewModel
             DeckManager.DeleteSelectedDecks(decksToDelete);
             ReloadDeckList();
             ReloadCardList();
+            CurrentCard = null;
             OnPropertyChanged("CurrentDeck");
         }
         public void SaveSelectedCards(List<int> selectedCardIndexes)
