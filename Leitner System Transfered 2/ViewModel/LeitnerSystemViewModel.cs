@@ -21,7 +21,6 @@ namespace Leitner_System_Transfered_2.ViewModel
         //--------------------------------------------------------------------------------
         public ObservableCollection<DeckViewModel> Decks { get; private set; }
         public ObservableCollection<CardViewModel> Cards { get; private set; }
-        //public string CurrentDeckName { get; set; }
         public DeckViewModel CurrentDeck { get; private set; }
         public CardViewModel CurrentCard
         {
@@ -59,12 +58,6 @@ namespace Leitner_System_Transfered_2.ViewModel
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
-        //public void RenameCurrentDeckSave()
-        //{
-        //    if (CurrentDeck == null|| !CheckForUnsavedCardsDoWeContinue())
-        //        return;
-        //    CurrentDeck.Rename();
-        //}
         /// <summary>
         /// Update displaied deck list
         /// </summary>
@@ -116,13 +109,11 @@ namespace Leitner_System_Transfered_2.ViewModel
             {
                 CardViewModel cardViewModel = new CardViewModel(DeckManager.CurrentDeck.Cards[DeckManager.CurrentDeck.Cards.Count - 1]); ;
                 Cards.Add(cardViewModel);
-                CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
+                CurrentDeck.UpdateCount();
             }
         }
         public void AddDeck()
         {
-            //if (!CheckForUnsavedCardsDoWeContinue())
-            //    return;
             DeckManager.CreateNewDeck();
             Decks.Add(new DeckViewModel(DeckManager.Decks[DeckManager.Decks.Count - 1]));
         }
@@ -142,10 +133,7 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             DeckManager.UpdateSelectionCurrentCard(index);
             if (DeckManager.CurrentCard != null)
-            {
                 CurrentCard = Cards[index];
-                //CurrentCard.LoadImages();
-            }
             OnPropertyChanged("CurrentCard");
         }
         public bool UpdateCurrentDeckIndex(int index)
@@ -177,9 +165,9 @@ namespace Leitner_System_Transfered_2.ViewModel
             DeckManager.DeleteSelectedCardsFromCurrentDeck(cardsModelsToRemove);
             foreach (CardViewModel cardViewModel in cardsViewModelsToRemove)
                 Cards.Remove(cardViewModel);
-            CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
             CurrentCard = null;
             OnPropertyChanged("CurrentCard");
+            CurrentDeck.UpdateCount();
         }
         private Dictionary<Deck,ReverseSettings> GetDecksForTraining()
         {
@@ -237,7 +225,7 @@ namespace Leitner_System_Transfered_2.ViewModel
             //ReloadCardList();
             for (int i = Cards.Count; i < DeckManager.CurrentDeck.Cards.Count;i++)
                 Cards.Add(new CardViewModel(DeckManager.CurrentDeck.Cards[i]));
-            CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
+            CurrentDeck.UpdateCount();
         }
         public void CopyDecksInBuffer(List<int> indexesOfSelectedDecks)
         {
@@ -299,12 +287,9 @@ namespace Leitner_System_Transfered_2.ViewModel
             if (DeckManager.CurrentDeck == null||!CheckForUnsavedCardsDoWeContinue())
                 return;
             DeckManager.ImportExcelFileToCurrentDeck(filePath);
-            //ReloadCardList();
-            //CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
-            //ReloadCardList();
             for (int i = Cards.Count; i < DeckManager.CurrentDeck.Cards.Count; i++)
                 Cards.Add(new CardViewModel(DeckManager.CurrentDeck.Cards[i]));
-            CurrentDeck.Count = DeckManager.CurrentDeck.Cards.Count;
+            CurrentDeck.UpdateCount();
         }
         public void ExportCurrentDeckToExcelFile(string filePath)
         {

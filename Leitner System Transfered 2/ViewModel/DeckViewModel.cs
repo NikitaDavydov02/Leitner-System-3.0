@@ -21,24 +21,12 @@ namespace Leitner_System_Transfered_2.ViewModel
         public bool DeckIsSelectedForTraining { get; set; }
         public bool ReverseSettingChangingEnable { get; private set; }
         public ReverseSettings ReverseSetting { get; set; } = 0;
-        private int count;
-        public int Count
-        {
-            get
-            {
-                return count;
-            }
-            set
-            {
-                count = value;
-                OnPropertyChanged("Count");
-            }
+        public int Count { get { return Deck.Cards.Count; }
         }
         public Deck Deck { get; private set; }
         public DeckViewModel(Deck deck)
         {
             DeckName = deck.Name;
-            Count = deck.Cards.Count;
             DeckIsSelectedForTraining = false;
             ReverseSettingChangingEnable = false; ;
             ReverseSetting = 0;
@@ -76,6 +64,10 @@ namespace Leitner_System_Transfered_2.ViewModel
             Deck.Rename(deckName);
             //DeckName = Deck.Name;
             OnPropertyChanged("DeckName");
+        }
+        public void UpdateCount()
+        {
+            OnPropertyChanged("Count");
         }
     }
 }

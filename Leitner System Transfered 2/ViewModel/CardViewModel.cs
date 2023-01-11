@@ -107,14 +107,13 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             this.Card = card;
             this.straightOrReverse = straightOrReverse;
+
             if (!straightOrReverse)
             {
                 Question = card.Question;
                 Answer = card.Answer;
                 AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksQuestionImagePath);
                 AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksAnswerImagePath);
-                AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
-                QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
             }
             else
             {
@@ -122,9 +121,9 @@ namespace Leitner_System_Transfered_2.ViewModel
                 Question = card.Answer;
                 AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksQuestionImagePath);
                 AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksAnswerImagePath);
-                AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
-                QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
             }
+            AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
+            QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
             //Было добавлено
             OnPropertyChanged("AnswerImage");
             OnPropertyChanged("QuestionImage");
@@ -141,12 +140,6 @@ namespace Leitner_System_Transfered_2.ViewModel
 
             MakeCardViewModelFromCardModel(Card, straightOrReverse);
         }
-        //public void LoadImages()
-        //{
-        //        //AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
-        //        //QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
-                
-        //}
         public override string ToString()
         {
             return Question;
@@ -175,7 +168,6 @@ namespace Leitner_System_Transfered_2.ViewModel
         public void DontSaveCurrentCard()
         {
             MakeCardViewModelFromCardModel(Card, straightOrReverse);
-            //LoadImages();
         }
     }
 }
