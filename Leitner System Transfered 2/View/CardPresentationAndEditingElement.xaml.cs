@@ -50,8 +50,8 @@ namespace Leitner_System_Transfered_2.View
             Grid.SetColumnSpan(questionTextBox, 1);
             Grid.SetColumnSpan(answerTextBox, 1);
 
-            Grid.SetRowSpan(questionTextBox, 2);
-            Grid.SetRowSpan(answerTextBox, 2);
+            Grid.SetRowSpan(questionTextBox, 3);
+            Grid.SetRowSpan(answerTextBox, 3);
         }
         public void SetViewModel(CardViewModel vm)
         {
