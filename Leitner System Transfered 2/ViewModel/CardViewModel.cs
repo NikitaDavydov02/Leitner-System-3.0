@@ -17,10 +17,10 @@ namespace Leitner_System_Transfered_2.ViewModel
         //--------------------------------------------------------------------------------
         //------------------------------------- PUBLIC ---------------------------------
         //--------------------------------------------------------------------------------
-        public DateTime LastRepititionTime { get; set; }
-        public RepitionFrequensy RepitionFrequensy { get; set; }
-        public DateTime LastReverseRepititionTime { get; set; }
-        public RepitionFrequensy ReverseRepitionFrequensy { get; set; }
+        public DateTime LastRepititionTime { get { return Card.LastRepetitionTime; } }
+        public RepitionFrequensy RepitionFrequensy { get { return Card.RepitionFrequensy; } }
+        public DateTime LastReverseRepititionTime { get { return Card.LastReverseRepetitionTime; } }
+        public RepitionFrequensy ReverseRepitionFrequensy { get { return Card.ReverseRepitionFrequensy; } }
         public bool AnswerIsVisible
         {
             get { return answerIsVisible; }
@@ -91,8 +91,8 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         private string answer;
 
-        public string AbsoluteQuestionImagePath { get; private set; }
-        public string AbsoluteAnswerImagePath { get; private set; }
+        private string AbsoluteQuestionImagePath;
+        private string AbsoluteAnswerImagePath;
         public BitmapImage QuestionImage { get; private set; }
         public BitmapImage AnswerImage { get; private set; }
         private bool straightOrReverse;
@@ -106,10 +106,6 @@ namespace Leitner_System_Transfered_2.ViewModel
         private void MakeCardViewModelFromCardModel(Card card, bool straightOrReverse = false)
         {
             this.Card = card;
-            LastRepititionTime = card.LastRepetitionTime;
-            LastReverseRepititionTime = card.LastReverseRepetitionTime;
-            RepitionFrequensy = card.RepitionFrequensy;
-            ReverseRepitionFrequensy = card.ReverseRepitionFrequensy;
             this.straightOrReverse = straightOrReverse;
             if (!straightOrReverse)
             {
@@ -117,6 +113,8 @@ namespace Leitner_System_Transfered_2.ViewModel
                 Answer = card.Answer;
                 AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksQuestionImagePath);
                 AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksAnswerImagePath);
+                AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
+                QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
             }
             else
             {
@@ -124,6 +122,8 @@ namespace Leitner_System_Transfered_2.ViewModel
                 Question = card.Answer;
                 AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksQuestionImagePath);
                 AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksAnswerImagePath);
+                AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
+                QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
             }
             //Было добавлено
             OnPropertyChanged("AnswerImage");
@@ -141,12 +141,12 @@ namespace Leitner_System_Transfered_2.ViewModel
 
             MakeCardViewModelFromCardModel(Card, straightOrReverse);
         }
-        public void LoadImages()
-        {
-                AnswerImage = CreateImageWithFullPath(AbsoluteAnswerImagePath);
-                QuestionImage = CreateImageWithFullPath(AbsoluteQuestionImagePath);
+        //public void LoadImages()
+        //{
+        //        //AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
+        //        //QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
                 
-        }
+        //}
         public override string ToString()
         {
             return Question;
@@ -158,52 +158,24 @@ namespace Leitner_System_Transfered_2.ViewModel
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
-        private BitmapImage CreateImageWithFullPath(string path)
-        {
-            if (String.IsNullOrEmpty(path) || !File.Exists(path))
-                return null;
-                try
-                {
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    Stream stream = File.OpenRead(path);
-                    bitmap.StreamSource = stream;
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.EndInit();
-                    stream.Close();
-                     return bitmap;
-                }
-                catch
-                {
-                    BitmapImage bitmap = new BitmapImage(); 
-                    bitmap.BeginInit();
-                    string pathOfReservedImage = Path.Combine(Environment.CurrentDirectory, "Assets\\imageUploadingIsNotSucesful.jpg");
-                    Stream stream = File.OpenRead(pathOfReservedImage);
-                    bitmap.StreamSource = stream;
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.EndInit();
-                    stream.Close();
-                    return bitmap;
-                }
-        }
         public void UpdateQuestionImage(string absoluteImagePath)
         {
             AbsoluteQuestionImagePath = absoluteImagePath;
-            QuestionImage = CreateImageWithFullPath(absoluteImagePath);
+            QuestionImage = FileManager.CreateImageWithFullPath(absoluteImagePath);
             OnPropertyChanged("QuestionImage");
             OnPropertyChanged("NameOfCard");
         }
         public void UpdateAnswerImage(string absoluteImagePath)
         {
             AbsoluteAnswerImagePath = absoluteImagePath;
-            AnswerImage = CreateImageWithFullPath(absoluteImagePath);
+            AnswerImage = FileManager.CreateImageWithFullPath(absoluteImagePath);
             OnPropertyChanged("AnswerImage");
             OnPropertyChanged("NameOfCard");
         }
         public void DontSaveCurrentCard()
         {
             MakeCardViewModelFromCardModel(Card, straightOrReverse);
-            LoadImages();
+            //LoadImages();
         }
     }
 }

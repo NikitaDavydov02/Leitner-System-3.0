@@ -9,7 +9,7 @@ namespace Leitner_System_Transfered_2.ViewModel
 {
     public class CardResultViewModel
     {
-        public string Name { get; set; }
+        public string Name { get { return Card.Question; } }
         public Card Card { get; set; }
         public Result Result
         {

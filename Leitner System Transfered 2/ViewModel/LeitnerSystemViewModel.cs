@@ -144,7 +144,7 @@ namespace Leitner_System_Transfered_2.ViewModel
             if (DeckManager.CurrentCard != null)
             {
                 CurrentCard = Cards[index];
-                CurrentCard.LoadImages();
+                //CurrentCard.LoadImages();
             }
             OnPropertyChanged("CurrentCard");
         }

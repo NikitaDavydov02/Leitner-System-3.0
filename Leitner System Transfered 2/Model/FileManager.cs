@@ -10,6 +10,7 @@ using System.Windows;
 using System.Runtime.Serialization;
 //using Aspose.Cells;
 using Excel=Microsoft.Office.Interop.Excel;
+using System.Windows.Media.Imaging;
 
 
 
@@ -465,6 +466,34 @@ namespace Leitner_System_Transfered_2.Model
                 i++;
             File.Copy(absolutePathOfImageToCopy, Path.Combine(currentFolderWithDecksFullPath, relativeToDeckFolderFilePath + i.ToString()));
             return relativeToDeckFolderFilePath + i.ToString();
+        }
+        public static BitmapImage CreateImageWithFullPath(string path)
+        {
+            if (String.IsNullOrEmpty(path) || !File.Exists(path))
+                return null;
+            try
+            {
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                Stream stream = File.OpenRead(path);
+                bitmap.StreamSource = stream;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                stream.Close();
+                return bitmap;
+            }
+            catch
+            {
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                string pathOfReservedImage = Path.Combine(Environment.CurrentDirectory, "Assets\\imageUploadingIsNotSucesful.jpg");
+                Stream stream = File.OpenRead(pathOfReservedImage);
+                bitmap.StreamSource = stream;
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.EndInit();
+                stream.Close();
+                return bitmap;
+            }
         }
     }
 }

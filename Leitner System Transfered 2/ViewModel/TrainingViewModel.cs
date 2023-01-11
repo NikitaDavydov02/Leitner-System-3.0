@@ -62,7 +62,7 @@ namespace Leitner_System_Transfered_2.ViewModel
             NextCardEventArgs nextCardEventArgs = args as NextCardEventArgs;
             CurrentTrainingCard = new CardViewModel(nextCardEventArgs.Card, nextCardEventArgs.StraightOrReverse);
             CurrentTrainingCard.AnswerIsVisible = false;
-            CurrentTrainingCard.LoadImages();
+            //CurrentTrainingCard.LoadImages();
             CardsAnswered = (trainingModel.CurrentTrainingCardIndex).ToString() + "/" + trainingModel.CurrentTrainingCardsCount.ToString();
             //AnswerIsVisible = false;
             OnPropertyChanged("CurrentTrainingCard");
@@ -96,7 +96,7 @@ namespace Leitner_System_Transfered_2.ViewModel
             Results = new ObservableCollection<CardResultViewModel>();
             foreach (Card c in trainingModel.Results.Keys)
             {
-                CardResultViewModel cardResultViewModel = new CardResultViewModel() { Name = c.Question, Result = trainingModel.Results[c], Card = c };
+                CardResultViewModel cardResultViewModel = new CardResultViewModel() { Result = trainingModel.Results[c], Card = c };
                 cardResultViewModel.CardResultChanged += ChangeResultOfCard;
                 Results.Add(cardResultViewModel);
             }
