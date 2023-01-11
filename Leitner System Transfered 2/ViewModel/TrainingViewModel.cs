@@ -17,7 +17,7 @@ namespace Leitner_System_Transfered_2.ViewModel
         //------------------------------------- PUBLIC ---------------------------------
         //--------------------------------------------------------------------------------
         public CardViewModel CurrentTrainingCard { get; private set; }
-        public string CardsAnswered { get; private set; }
+        public string CardsAnswered { get { return (trainingModel.CurrentTrainingCardIndex).ToString() + "/" + trainingModel.CurrentTrainingCardsCount.ToString(); } }
         public bool TrainingIsComleted 
         {
             get { return trainingModel.TrainingIsComleted; }
@@ -62,9 +62,6 @@ namespace Leitner_System_Transfered_2.ViewModel
             NextCardEventArgs nextCardEventArgs = args as NextCardEventArgs;
             CurrentTrainingCard = new CardViewModel(nextCardEventArgs.Card, nextCardEventArgs.StraightOrReverse);
             CurrentTrainingCard.AnswerIsVisible = false;
-            //CurrentTrainingCard.LoadImages();
-            CardsAnswered = (trainingModel.CurrentTrainingCardIndex).ToString() + "/" + trainingModel.CurrentTrainingCardsCount.ToString();
-            //AnswerIsVisible = false;
             OnPropertyChanged("CurrentTrainingCard");
             OnPropertyChanged("CardsAnswered");
             //OnPropertyChanged("AnswerIsVisible");
@@ -76,7 +73,6 @@ namespace Leitner_System_Transfered_2.ViewModel
         /// <param name="args"></param>
         private void CompleteTrainingEventHandler(object sender, EventArgs args)
         {
-            CardsAnswered = (trainingModel.CurrentTrainingCardIndex).ToString() + "/" + trainingModel.CurrentTrainingCardsCount.ToString();
             CurrentTrainingCard = null;
 
             int wrongAnswers = 0;
