@@ -25,9 +25,9 @@ namespace Leitner_System_Transfered_2.Model
         [DataMember]
         public string Answer { get; private set; }
         [DataMember]
-        public string RelativeToFoderWithDecksQuestionImagePath { get; private set; }
+        public string RelativeToDeckFolderAnswerImagePath { get; private set; }
         [DataMember]
-        public string RelativeToFoderWithDecksAnswerImagePath { get; private set; }
+        public string RelativeToDeckFolderQuestionImagePath { get; private set; }
         [DataMember]
         public DateTime LastRepetitionTime { get; private set; }
         [DataMember]
@@ -53,8 +53,8 @@ namespace Leitner_System_Transfered_2.Model
             this.ParentDeck = parentDeck;
             Question = question;
             Answer = answer;
-            RelativeToFoderWithDecksQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
-            RelativeToFoderWithDecksAnswerImagePath = relativeToFoderWithDecksAnswerImagePath;
+            RelativeToDeckFolderQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
+            RelativeToDeckFolderAnswerImagePath = relativeToFoderWithDecksAnswerImagePath;
             LastRepetitionTime = DateTime.Now;
             LastReverseRepetitionTime = DateTime.Now;
             RepitionFrequensy = RepitionFrequensy.Daily;
@@ -64,8 +64,8 @@ namespace Leitner_System_Transfered_2.Model
         {
             Question = question;
             Answer = answer;
-            RelativeToFoderWithDecksQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
-            RelativeToFoderWithDecksAnswerImagePath = relativeToFoderWithDecksAbswerImagePath;
+            RelativeToDeckFolderQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
+            RelativeToDeckFolderAnswerImagePath = relativeToFoderWithDecksAbswerImagePath;
         }
         ///<summary>
         ///Update last repitition time by answer 

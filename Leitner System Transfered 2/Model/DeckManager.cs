@@ -173,10 +173,10 @@ namespace Leitner_System_Transfered_2.Model
                 Card newCard = deck.CreateNewCard();
                 string answrAbsolutImagPath = "";
                 string qustionAbsolutImagPath = "";
-                if (!String.IsNullOrEmpty(cardToCopy.RelativeToFoderWithDecksQuestionImagePath))
-                    qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToFoderWithDecksQuestionImagePath);
-                if (!String.IsNullOrEmpty(cardToCopy.RelativeToFoderWithDecksAnswerImagePath))
-                    answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToFoderWithDecksAnswerImagePath);
+                if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderQuestionImagePath))
+                    qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderQuestionImagePath);
+                if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderAnswerImagePath))
+                    answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderAnswerImagePath);
                 SaveCards(new List<Card>() { newCard }, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<string>() { qustionAbsolutImagPath }, new List<string>() { answrAbsolutImagPath });
                 
             }

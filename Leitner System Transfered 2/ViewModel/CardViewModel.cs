@@ -43,11 +43,11 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             get
             {
-                string cardAbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.RelativeToFoderWithDecksAnswerImagePath);
-                if (String.IsNullOrEmpty(Card.RelativeToFoderWithDecksAnswerImagePath))
+                string cardAbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.RelativeToDeckFolderAnswerImagePath);
+                if (String.IsNullOrEmpty(Card.RelativeToDeckFolderAnswerImagePath))
                     cardAbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath);
-                string cardAbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.RelativeToFoderWithDecksQuestionImagePath);
-                if (String.IsNullOrEmpty(Card.RelativeToFoderWithDecksQuestionImagePath))
+                string cardAbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, Card.RelativeToDeckFolderQuestionImagePath);
+                if (String.IsNullOrEmpty(Card.RelativeToDeckFolderQuestionImagePath))
                     cardAbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath);
                 if ((!straightOrReverse && Question == Card.Question &&
                 Answer == Card.Answer &&
@@ -112,15 +112,15 @@ namespace Leitner_System_Transfered_2.ViewModel
             {
                 Question = card.Question;
                 Answer = card.Answer;
-                AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksQuestionImagePath);
-                AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksAnswerImagePath);
+                AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
+                AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
             }
             else
             {
                 Answer = card.Question;
                 Question = card.Answer;
-                AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksQuestionImagePath);
-                AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToFoderWithDecksAnswerImagePath);
+                AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
+                AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
             }
             AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
             QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
