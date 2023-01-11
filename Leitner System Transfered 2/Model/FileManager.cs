@@ -52,13 +52,15 @@ namespace Leitner_System_Transfered_2.Model
             }
             currentFolderWithDecksFullPath = absolutePathOfFolderWithDecks;
             string[] decksFilesNames = Directory.GetFiles(absolutePathOfFolderWithDecks);
-            foreach (string deckDirectoryName in decksFilesNames)
+            foreach (string deckFileName in decksFilesNames)
             {
-                Deck deck = ReadDeckFromDeckFolderWithFullPath(deckDirectoryName);
+                if (!deckFileName.Contains(".xml"))
+                    continue;
+                Deck deck = ReadDeckFromDeckFolderWithFullPath(deckFileName);
                 if (deck != null)
                     output.Add(deck);
                 else
-                    MessageBox.Show("Reading of deck from " + deckDirectoryName + "was not sucssesful.");
+                    MessageBox.Show("Reading of deck from " + deckFileName + "was not sucssesful.");
             }
             MakeBackupOfDecksFromCurrentFolder(output);
             if (output.Count == 0)

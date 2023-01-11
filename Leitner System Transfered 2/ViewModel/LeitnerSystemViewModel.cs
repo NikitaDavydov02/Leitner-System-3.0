@@ -133,7 +133,11 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             DeckManager.UpdateSelectionCurrentCard(index);
             if (DeckManager.CurrentCard != null)
+            {
                 CurrentCard = Cards[index];
+                CurrentCard.LoadImages();
+            }
+                
             OnPropertyChanged("CurrentCard");
         }
         public bool UpdateCurrentDeckIndex(int index)

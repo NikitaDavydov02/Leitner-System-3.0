@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Leitner System 3.0.1")]
+[assembly: AssemblyTitle("Leitner System 3.0.2")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Nikita Davydov")]
-[assembly: AssemblyProduct("Leitner System 3.0.1")]
+[assembly: AssemblyProduct("Leitner System 3.0.2")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

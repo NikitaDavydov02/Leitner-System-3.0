@@ -122,14 +122,18 @@ namespace Leitner_System_Transfered_2.ViewModel
                 AbsoluteAnswerImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
                 AbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
             }
-            AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
-            QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
+            
             //Было добавлено
             OnPropertyChanged("AnswerImage");
             OnPropertyChanged("QuestionImage");
             OnPropertyChanged("Answer");
             OnPropertyChanged("Question");
             OnPropertyChanged("NameOfCard");
+        }
+        public void LoadImages()
+        {
+            AnswerImage = FileManager.CreateImageWithFullPath(AbsoluteAnswerImagePath);
+            QuestionImage = FileManager.CreateImageWithFullPath(AbsoluteQuestionImagePath);
         }
         public void SaveThisCard()
         {

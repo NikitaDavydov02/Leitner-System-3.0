@@ -62,6 +62,7 @@ namespace Leitner_System_Transfered_2.ViewModel
             NextCardEventArgs nextCardEventArgs = args as NextCardEventArgs;
             CurrentTrainingCard = new CardViewModel(nextCardEventArgs.Card, nextCardEventArgs.StraightOrReverse);
             CurrentTrainingCard.AnswerIsVisible = false;
+            CurrentTrainingCard.LoadImages();
             OnPropertyChanged("CurrentTrainingCard");
             OnPropertyChanged("CardsAnswered");
             //OnPropertyChanged("AnswerIsVisible");
