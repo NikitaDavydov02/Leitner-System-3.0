@@ -71,16 +71,16 @@
         <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15" Orientation="Vertical">
             <StackPanel Orientation="Horizontal" MouseEnter="StackPanel_MouseEnter" MouseLeave="StackPanel_MouseLeave">
                 <TextBlock Margin="5">Path to folder with decks</TextBlock>
-                <TextBox x:Name="pathOfSaveDeck" Style="{DynamicResource TextBoxStyle1}" IsReadOnly="True"  Margin="5" MinWidth="150" HorizontalAlignment="Stretch" Text="{Binding SettingsModel.AbsolutePathOfSaveDeckFolder, Mode=OneWay}"/>
+                <TextBox x:Name="pathOfSaveDeck" Style="{DynamicResource TextBoxStyle1}" IsReadOnly="True"  Margin="5" MinWidth="150" HorizontalAlignment="Stretch" Text="{Binding AbsolutePathOfSaveDeckFolder, Mode=OneWay}"/>
                 <Button x:Name="chooseSaveFolder" Style="{DynamicResource DarkButtonWithText}" MaxHeight="25" Margin="5" HorizontalAlignment="Right" Click="chooseSaveFolder_Click" >Choose...</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <CheckBox x:Name="makeBackupCheckbox" Margin="5" IsChecked="{Binding SettingsModel.MakeBackup, Mode=TwoWay}" Style="{DynamicResource CheckBoxStyle1}"/>
+                <CheckBox x:Name="makeBackupCheckbox" Margin="5" IsChecked="{Binding MakeBackup, Mode=TwoWay}" Style="{DynamicResource CheckBoxStyle1}"/>
                 <TextBlock Margin="5">Make backup at each application opening</TextBlock>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Margin="5">Path to folder with backups</TextBlock>
-                <TextBox x:Name="pathOfBackupDeck" Style="{DynamicResource TextBoxStyle1}" IsReadOnly="True" Margin="5"  MinWidth="150" HorizontalAlignment="Stretch" Text="{Binding SettingsModel.AbsolutePathOfBackupFolder, Mode=OneWay}"/>
+                <TextBox x:Name="pathOfBackupDeck" Style="{DynamicResource TextBoxStyle1}" IsReadOnly="True" Margin="5"  MinWidth="150" HorizontalAlignment="Stretch" Text="{Binding AbsolutePathOfBackupFolder, Mode=OneWay}"/>
                 <Button x:Name="chooseBackupFolder" Margin="5" Style="{DynamicResource DarkButtonWithText}" MaxHeight="25" HorizontalAlignment="Right" Click="chooseBackupFolder_Click">Choose...</Button>
             </StackPanel>
             <!--<StackPanel Orientation="Horizontal">

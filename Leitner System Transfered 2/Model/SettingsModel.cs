@@ -15,15 +15,44 @@ namespace Leitner_System_Transfered_2.Model
     public class SettingsModel
     {
         [DataMember]
-        public bool MakeBackup { get; set; }
+        public bool MakeBackup { 
+            get { return makeBackup; } 
+            set { makeBackup = value;
+                FileManager.SaveSettings();
+            } }
+        private bool makeBackup;
         [DataMember]
-        public string AbsolutePathOfBackupFolder { get; set; }
+        public string AbsolutePathOfBackupFolder {
+            get { return absolutePathOfBackupFolder; }
+            set
+            {
+                absolutePathOfBackupFolder = value;
+                FileManager.SaveSettings();
+            }
+        }
+        private string absolutePathOfBackupFolder;
         [DataMember]
-        public string AbsolutePathOfSaveDeckFolder { get; set; }
+        public string AbsolutePathOfSaveDeckFolder {
+            get { return absolutePathOfSaveDeckFolder; }
+            set
+            {
+                absolutePathOfSaveDeckFolder = value;
+                FileManager.SaveSettings();
+            }
+        }
+        private string absolutePathOfSaveDeckFolder;
         [DataMember]
         public List<TrainingTemplate> TrainingTemplates { get; set; }
         [DataMember]
-        public int CurrentTrainingTemplate { get; set; }
+        public int CurrentTrainingTemplate {
+            get { return currentTrainingTemplate; }
+            set
+            {
+                currentTrainingTemplate = value;
+                FileManager.SaveSettings();
+            }
+        }
+        private int currentTrainingTemplate;
 
         List<TrainingTemplate> buffer = new List<TrainingTemplate>();
         public TrainingTemplate GetDefaultTrainingTemplate()

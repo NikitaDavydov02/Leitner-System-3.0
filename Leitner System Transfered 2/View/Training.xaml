@@ -275,7 +275,7 @@
                         <TextBlock x:Name="wrongResults" FontSize="20" FontFamily="Calibri" Text="{Binding WrongAnswersCount}" HorizontalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="15 5">
-                        <TextBlock Text="Procentage of correct answers: " FontSize="20" FontFamily="Calibri"/>
+                        <TextBlock Text="Percentage of correct answers: " FontSize="20" FontFamily="Calibri"/>
                         <TextBlock x:Name="procentage" FontSize="20" FontFamily="Calibri" Text="{Binding Procentage}" HorizontalAlignment="Center"/>
                     </StackPanel>
                     <ScrollViewer x:Name="changeAnswersScrollViewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="15" PreviewMouseWheel="changeAnswersScrollViewer_PreviewMouseWheel" MinHeight="100" Template="{DynamicResource ScrollViewerControlTemplate1}">

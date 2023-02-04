@@ -51,7 +51,6 @@ namespace Leitner_System_Transfered_2.View
 
         private void homeButton_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.SaveSettings();
             EventHandler handler = GoToHomePage;
             if (handler != null)
                 handler(this, new EventArgs());
@@ -63,8 +62,9 @@ namespace Leitner_System_Transfered_2.View
             FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();
             folderBrowserDialog1.ShowDialog();
             folderPath = folderBrowserDialog1.SelectedPath;
-            viewModel.SettingsModel.AbsolutePathOfSaveDeckFolder = folderPath;
-            DataContext = viewModel.SettingsModel;
+            viewModel.AbsolutePathOfSaveDeckFolder = folderPath;
+            //DataContext = viewModel.SettingsModel;
+            viewModel.SaveSettings();
         }
 
         private void chooseBackupFolder_Click(object sender, RoutedEventArgs e)
@@ -73,8 +73,9 @@ namespace Leitner_System_Transfered_2.View
             FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog();
             folderBrowserDialog1.ShowDialog();
             folderPath = folderBrowserDialog1.SelectedPath;
-            viewModel.SettingsModel.AbsolutePathOfBackupFolder = folderPath;
-            DataContext = viewModel.SettingsModel;
+            viewModel.AbsolutePathOfBackupFolder = folderPath;
+            //DataContext = viewModel.SettingsModel;
+            viewModel.SaveSettings();
         }
 
         private void trainingTemplatesScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -87,11 +88,13 @@ namespace Leitner_System_Transfered_2.View
         private void newCardButton_Click(object sender, RoutedEventArgs e)
         {
             viewModel.AddTrainingTemplate();
+            viewModel.SaveSettings();
         }
 
         private void deleteCardButton_Click(object sender, RoutedEventArgs e)
         {
             viewModel.DeleteSelectedTemplates(new List<int>() { trainingTemplatesListView.SelectedIndex });
+            viewModel.SaveSettings();
         }
 
         private void Copy_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -117,6 +120,7 @@ namespace Leitner_System_Transfered_2.View
         private void Paste_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             viewModel.PasteTemplatesFromBuffer();
+            viewModel.SaveSettings();
         }
         private void Delete_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -133,6 +137,7 @@ namespace Leitner_System_Transfered_2.View
                 i++;
             }
             viewModel.DeleteSelectedTemplates(indexesOfSelectedItems);
+            viewModel.SaveSettings();
         }
 
         private void StackPanel_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)

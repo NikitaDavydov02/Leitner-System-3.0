@@ -32,22 +32,25 @@ namespace Leitner_System_Transfered_2.View
         {
             InitializeComponent();
             //frame.Navigate(new StartPage());
-            startPage = new StartPage();
-            this.Content = startPage;
-            startPage.TrainingStart += StartPage_TrainingStart;
-            startPage.GoToSettings += StartPage_GoToSettings;
+            ReloadStartPage();
         }
 
         private void StartPage_GoToSettings(object sender, EventArgs e)
         {
             Settings settingsPage = new Settings();
-            this.Content = settingsPage;
             settingsPage.GoToHomePage += SettingsPage_GoToHomePage;
+            this.Content = settingsPage;
         }
-
+        private void ReloadStartPage()
+        {
+            startPage = new StartPage();
+            this.Content = startPage;
+            startPage.TrainingStart += StartPage_TrainingStart;
+            startPage.GoToSettings += StartPage_GoToSettings;
+        }
         private void SettingsPage_GoToHomePage(object sender, EventArgs e)
         {
-            this.Content = startPage;
+            ReloadStartPage();
         }
 
         private void StartPage_TrainingStart(object sender, EventArgs e)

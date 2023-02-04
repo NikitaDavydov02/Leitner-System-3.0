@@ -88,7 +88,10 @@ namespace Leitner_System_Transfered_2.ViewModel
             }
             CorrectAnswersCount = correctAnswers.ToString();
             WrongAnswersCount = wrongAnswers.ToString();
-            Procentage = (Math.Round(((double)correctAnswers / ((double)wrongAnswers + (double)correctAnswers)) * 100,2).ToString()+"%");
+            if (((double)wrongAnswers + (double)correctAnswers) != 0)
+                Procentage = (Math.Round(((double)correctAnswers / ((double)wrongAnswers + (double)correctAnswers)) * 100, 2).ToString() + "%");
+            else
+                Procentage = "No cards were repeated";
             //Fill result collection with contnent
             Results = new ObservableCollection<CardResultViewModel>();
             foreach (Card c in trainingModel.Results.Keys)

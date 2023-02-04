@@ -21,7 +21,7 @@ namespace Leitner_System_Transfered_2.Model
         public static string currentFolderWithDecksFullPath { get; private set; }
         private static string defaultFolderWithDecksPath = Path.Combine(Environment.CurrentDirectory, "Decks");
         private static string defaultBackupFolder = Path.Combine(Environment.CurrentDirectory, "Backup");
-
+        private static bool readingSettings = false;
         //private static string defaultFolderWithDecksPath = "G:\\My Drive\\Планирование и отслеживание продуктивности\\Decks - Copy";
         //private static string defaultBackupFolder = "G:\\My Drive\\Программирование\\C#\\Проекты\\Leitner System\\Leitner System\\Backups";
         public static SettingsModel settings;
@@ -165,6 +165,7 @@ namespace Leitner_System_Transfered_2.Model
         }
         private static void ReadExistingSettings(string path)
         {
+            readingSettings = true;
             try
             {
                 using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
@@ -184,6 +185,7 @@ namespace Leitner_System_Transfered_2.Model
             {
                 MessageBox.Show("Settings was not found in " + path);
             }
+            readingSettings = false;
         }
         public static void UploadSettings()
         {
@@ -195,6 +197,8 @@ namespace Leitner_System_Transfered_2.Model
         }
         public static void SaveSettings()
         {
+            if (settings == null||readingSettings)
+                return;
             string path = Path.Combine(Environment.CurrentDirectory, "settings.xml");
             if (String.IsNullOrEmpty(settings.AbsolutePathOfBackupFolder))
                 settings.AbsolutePathOfBackupFolder = defaultBackupFolder;
@@ -208,9 +212,9 @@ namespace Leitner_System_Transfered_2.Model
                     ds.WriteObject(fs, settings);
                 }
             }
-            catch
+            catch(Exception e)
             {
-                MessageBox.Show("Settings was not saved");
+                MessageBox.Show("Settings was not saved"+e.Message);
             }
         }
         ///<summary>

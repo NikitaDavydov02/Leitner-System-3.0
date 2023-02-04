@@ -12,6 +12,31 @@ namespace Leitner_System_Transfered_2.ViewModel
     class SettingsViewModel:INotifyPropertyChanged
     {
         public SettingsModel SettingsModel { get; private set; }
+        public bool MakeBackup
+        {
+            get { return SettingsModel.MakeBackup; }
+            set { SettingsModel.MakeBackup = value; 
+            }
+        }
+        public string AbsolutePathOfBackupFolder
+        {
+            get { return SettingsModel.AbsolutePathOfBackupFolder; }
+            set { SettingsModel.AbsolutePathOfBackupFolder = value;
+                OnPropertyChanged("AbsolutePathOfBackupFolder");
+            }
+        }
+        public string AbsolutePathOfSaveDeckFolder
+        {
+            get { return SettingsModel.AbsolutePathOfSaveDeckFolder; }
+            set { SettingsModel.AbsolutePathOfSaveDeckFolder = value;
+                OnPropertyChanged("AbsolutePathOfSaveDeckFolder");
+            }
+        }
+        public int CurrentTrainingTemplate
+        {
+            get { return SettingsModel.CurrentTrainingTemplate; }
+            set { SettingsModel.CurrentTrainingTemplate = value; }
+        }
         public ObservableCollection<TrainingTemplateViewModel> TrainingTemplates { get; private set; }
         private List<TrainingTemplateViewModel> buffer;
 
