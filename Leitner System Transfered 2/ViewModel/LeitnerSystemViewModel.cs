@@ -185,7 +185,18 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             if (!CheckForUnsavedCardsDoWeContinue())
                 return null;
+            Dictionary<Deck, ReverseSettings> decksWithReverseSettings = GetDecksForTraining();
+            if (decksWithReverseSettings.Count == 0)
+            {
+                System.Windows.MessageBox.Show("There is no decks for training. Click on checkboxes corresponding to decks to select deck for training.");
+                return null;
+            }
             TrainingModel trainingModel = new TrainingModel(GetDecksForTraining());
+            if (trainingModel.Results.Count == 0)
+            {
+                System.Windows.MessageBox.Show("There is no cards for training. Try to repeat tomorrow.");
+                return null;
+            }
             if (trainingModel == null)
                 return null;
             return new TrainingViewModel(trainingModel);

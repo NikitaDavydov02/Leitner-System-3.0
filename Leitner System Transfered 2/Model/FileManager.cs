@@ -22,7 +22,7 @@ namespace Leitner_System_Transfered_2.Model
         private static string defaultFolderWithDecksPath = Path.Combine(Environment.CurrentDirectory, "Decks");
         private static string defaultBackupFolder = Path.Combine(Environment.CurrentDirectory, "Backup");
 
-        //private static string defaultFolderWithDecksPath = "G:\\My Drive\\Программирование\\C#\\Проекты\\Leitner System\\Leitner System\\Тестовые колоды";
+        //private static string defaultFolderWithDecksPath = "G:\\My Drive\\Планирование и отслеживание продуктивности\\Decks - Copy";
         //private static string defaultBackupFolder = "G:\\My Drive\\Программирование\\C#\\Проекты\\Leitner System\\Leitner System\\Backups";
         public static SettingsModel settings;
 

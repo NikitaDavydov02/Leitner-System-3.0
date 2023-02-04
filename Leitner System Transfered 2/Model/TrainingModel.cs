@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows;
 
 namespace Leitner_System_Transfered_2.Model
 {
@@ -41,7 +42,7 @@ namespace Leitner_System_Transfered_2.Model
         //------------------------------------- METHODS ---------------------------------
         //--------------------------------------------------------------------------------
         /// <summary>
-        /// Create new TrainingModel instance, select appropriate training cards from training decks
+        /// Create new TrainingModel instance, select appropriatew training cards from training decks
         /// </summary>
         /// <param name="trainingDecks"></param>
         /// <param name="fullFolderWithDecksPath"></param>
@@ -64,6 +65,10 @@ namespace Leitner_System_Transfered_2.Model
             foreach (Card card in trainingCards)
                 Results.Add(card, Result.NoAnswer);
             CurrentTrainingCardIndex = 0;
+            if (Results.Count == 0)
+            {
+                System.Windows.MessageBox.Show("There is no cards for training. Try tomorrow.");
+            }
         }
         private List<Card> ShuffleList(List<Card> inputList)
         {

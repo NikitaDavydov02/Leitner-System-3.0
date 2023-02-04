@@ -523,7 +523,7 @@ namespace Leitner_System_Transfered_2.View
 
         private void helpButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("www.yandex.ru");
+            Process.Start("https://leitnersystemapp.com/html/manual.html");
         }
 
         private void helpButton_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
