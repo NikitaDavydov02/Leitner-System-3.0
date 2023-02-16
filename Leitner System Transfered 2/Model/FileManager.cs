@@ -66,10 +66,10 @@ namespace Leitner_System_Transfered_2.Model
             }
             MakeBackupOfDecksFromCurrentFolder(output);
             if (output.Count == 0)
-                output = ReadAndConvertOldDecksToNewFormat(absolutePathOfFolderWithDecks);
+                output = ReadAndConvertOldDecksToNewFormatWithoutFoders(absolutePathOfFolderWithDecks);
             return output;
         }
-        public static List<Deck> ReadAndConvertOldDecksToNewFormat(string absolutePathOfFolderWithDecks = "")
+        public static List<Deck> ReadAndConvertOldDecksToNewFormatWithoutFoders(string absolutePathOfFolderWithDecks = "")
         {
             if (String.IsNullOrEmpty(absolutePathOfFolderWithDecks))
                 absolutePathOfFolderWithDecks = settings.AbsolutePathOfSaveDeckFolder;
