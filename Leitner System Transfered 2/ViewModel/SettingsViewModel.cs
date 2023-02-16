@@ -51,11 +51,14 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             TrainingTemplateViewModel templateViewModel = new TrainingTemplateViewModel(template);
             templateViewModel.PropertyChanged += TemplateSelectionChanged;
+            templateViewModel.PropertyChanged += TemplatePropertyChanged;
             return templateViewModel;
         }
 
         private void TemplateSelectionChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName != "TemplateIsSelectedForTraining")
+                return;
             TrainingTemplateViewModel templateSender = sender as TrainingTemplateViewModel;
             if (templateSender == null)
                 return;
@@ -71,6 +74,13 @@ namespace Leitner_System_Transfered_2.ViewModel
                 if (templateViewModel != sender)
                     templateViewModel.TemplateIsSelectedForTraining = false;
             }
+            SaveSettings();
+        }
+        private void TemplatePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "TemplateIsSelectedForTraining")
+                return;
+            SaveSettings();
         }
 
         private void ReloadTemplateList()

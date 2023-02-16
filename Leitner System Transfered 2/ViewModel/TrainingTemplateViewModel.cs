@@ -13,7 +13,9 @@ namespace Leitner_System_Transfered_2.ViewModel
         public string TemplateName 
         {
             get { return trainingTemplate.TemplateName; }
-            set { trainingTemplate.TemplateName = value; }
+            set { trainingTemplate.TemplateName = value;
+                OnPropertyChanged("TemplateName");
+            }
         }
         public string MaxCardCount
         {
@@ -23,7 +25,7 @@ namespace Leitner_System_Transfered_2.ViewModel
                 int newValue = -1;
                 if (Int32.TryParse(value, out newValue))
                     trainingTemplate.maxCardsCount = newValue;
-
+                OnPropertyChanged("MaxCardCount");
             }
         }
         
