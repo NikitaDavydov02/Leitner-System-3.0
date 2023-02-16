@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace Leitner_System_Transfered_2.ViewModel
 {

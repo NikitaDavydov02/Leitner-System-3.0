@@ -11,6 +11,8 @@ using System.Runtime.Serialization;
 //using Aspose.Cells;
 using Excel=Microsoft.Office.Interop.Excel;
 using System.Windows.Media.Imaging;
+using System.Xml;
+using System.Drawing;
 
 
 
@@ -187,6 +189,7 @@ namespace Leitner_System_Transfered_2.Model
             }
             readingSettings = false;
         }
+        
         public static void UploadSettings()
         {
             string path = Path.Combine(Environment.CurrentDirectory, "settings.xml");
@@ -551,6 +554,15 @@ namespace Leitner_System_Transfered_2.Model
             File.Copy(absolutePathOfImageToCopy, Path.Combine(currentFolderWithDecksFullPath, relativeToDeckFolderFilePath + i.ToString()));
             return relativeToDeckFolderFilePath + i.ToString();
         }
+        private static BitmapImage ImageFromBuffer(Byte[] bytes)
+        {
+            MemoryStream stream = new MemoryStream(bytes);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            image.StreamSource = stream;
+            image.EndInit();
+            return image;
+        }
         public static BitmapImage CreateImageWithFullPath(string path)
         {
             if (String.IsNullOrEmpty(path) || !File.Exists(path))
@@ -564,9 +576,14 @@ namespace Leitner_System_Transfered_2.Model
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.EndInit();
                 stream.Close();
+                ImageConverter converter = new ImageConverter();
+                byte[] array;
+                System.Drawing.Image img = Image.FromFile(path);
+                byte[] bTemp = (byte[])converter.ConvertTo(img, typeof(byte[]));
+                bitmap = ImageFromBuffer(bTemp);
                 return bitmap;
             }
-            catch
+            catch(Exception e)
             {
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
@@ -576,6 +593,11 @@ namespace Leitner_System_Transfered_2.Model
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.EndInit();
                 stream.Close();
+                ImageConverter converter = new ImageConverter();
+                byte[] array;
+                System.Drawing.Image img = Image.FromFile(path);
+                byte[] bTemp = (byte[])converter.ConvertTo(img, typeof(byte[]));
+                bitmap = ImageFromBuffer(bTemp);
                 return bitmap;
             }
         }
