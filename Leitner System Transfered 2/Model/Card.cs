@@ -41,22 +41,21 @@ namespace Leitner_System_Transfered_2.Model
                 ImageConverter converter = new ImageConverter();
                 //byte[] array;
                 //System.Drawing.Image img = Image.FromFile(path);
+                //Image i =b as Image;
                 AnswerImageBytes = (byte[])converter.ConvertTo(value, typeof(byte[]));
-                AnswerImage = value;
             }
         }
         public BitmapImage QuestionImage {
             get
             {
-                return ImageFromByteArray(AnswerImageBytes);
+                return ImageFromByteArray(QuestionImageBytes);
             }
             set
             {
                 ImageConverter converter = new ImageConverter();
                 //byte[] array;
                 //System.Drawing.Image img = Image.FromFile(path);
-                AnswerImageBytes = (byte[])converter.ConvertTo(value, typeof(byte[]));
-                AnswerImage = value;
+                QuestionImageBytes = (byte[])converter.ConvertTo(value, typeof(byte[]));
             }
         }
         [DataMember]
@@ -179,6 +178,8 @@ namespace Leitner_System_Transfered_2.Model
         }
         private static BitmapImage ImageFromByteArray(Byte[] bytes)
         {
+            if (bytes == null || bytes.Length == 0)
+                return null;
             MemoryStream stream = new MemoryStream(bytes);
             BitmapImage image = new BitmapImage();
             image.BeginInit();
