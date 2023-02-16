@@ -58,7 +58,7 @@ namespace Leitner_System_Transfered_2.Model
             {
                 if (!deckFileName.Contains(".xml"))
                     continue;
-                Deck deck = ReadDeckFromDeckFolderWithFullPath(deckFileName);
+                Deck deck = ReadDeckOfSecondVersioFromDeckFolderWithFullPath(deckFileName);
                 if (deck != null)
                     output.Add(deck);
                 else
@@ -66,10 +66,10 @@ namespace Leitner_System_Transfered_2.Model
             }
             MakeBackupOfDecksFromCurrentFolder(output);
             if (output.Count == 0)
-                output = ReadAndConvertOldDecksToNewFormatWithoutFoders(absolutePathOfFolderWithDecks);
+                output = ReadAndConvertDecksFromFirstVersionToSecond(absolutePathOfFolderWithDecks);
             return output;
         }
-        public static List<Deck> ReadAndConvertOldDecksToNewFormatWithoutFoders(string absolutePathOfFolderWithDecks = "")
+        public static List<Deck> ReadAndConvertDecksFromFirstVersionToSecond(string absolutePathOfFolderWithDecks = "")
         {
             if (String.IsNullOrEmpty(absolutePathOfFolderWithDecks))
                 absolutePathOfFolderWithDecks = settings.AbsolutePathOfSaveDeckFolder;
@@ -85,7 +85,7 @@ namespace Leitner_System_Transfered_2.Model
             IEnumerable<string> decksDirectoriesNames = Directory.EnumerateDirectories(absolutePathOfFolderWithDecks);
             foreach (string deckDirectoryName in decksDirectoriesNames)
             {
-                Deck deck = ReadOldDeckFromDeckFolderWithFullPath(deckDirectoryName);
+                Deck deck = ReadFirstVersionDeckFromDeckFolderWithFullPath(deckDirectoryName);
                 if (deck != null)
                     output.Add(deck);
                 else
@@ -96,19 +96,19 @@ namespace Leitner_System_Transfered_2.Model
             {
                 foreach (Card card in deck.Cards)
                 {
-                    string relativeQuestionImagePath = "";
-                    string relativeAnswerImagePath = "";
-                    if (!String.IsNullOrEmpty(card.RelativeToDeckFolderQuestionImagePath))
-                        relativeQuestionImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderQuestionImagePath), true);
-                    if (!String.IsNullOrEmpty(card.RelativeToDeckFolderAnswerImagePath))
-                        relativeAnswerImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderAnswerImagePath),false);
-                    card.SetNewFields(card.Question, card.Answer, relativeQuestionImagePath, relativeAnswerImagePath);
+                    //string relativeQuestionImagePath = "";
+                    //string relativeAnswerImagePath = "";
+                    //if (!String.IsNullOrEmpty(card.RelativeToDeckFolderQuestionImagePath))
+                    //    relativeQuestionImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderQuestionImagePath), true);
+                    //if (!String.IsNullOrEmpty(card.RelativeToDeckFolderAnswerImagePath))
+                    //    relativeAnswerImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderAnswerImagePath),false);
+                    card.SetNewFields(card.Question, card.Answer, card.QuestionImage, card.AnswerImage);
                 }
                 SaveDeckOrUpdateDeckFile(deck);
             }
             return output;
         }
-        private static Deck ReadOldDeckFromDeckFolderWithFullPath(string absolutePathOfFolderWithDecks)
+        private static Deck ReadFirstVersionDeckFromDeckFolderWithFullPath(string absolutePathOfFolderWithDecks)
         {
             Deck readingDeck = null;
             if (!Directory.Exists(absolutePathOfFolderWithDecks))
@@ -224,7 +224,7 @@ namespace Leitner_System_Transfered_2.Model
         ///Return deck from folder by its absolute path, if the process was faild return null
         ///</summary>
         ///<param name="pathOfFolderWithDecks">Absolute path of folder that contains decks</param>
-        private static Deck ReadDeckFromDeckFolderWithFullPath(string absolutePathOfDeckFile)
+        private static Deck ReadDeckOfSecondVersioFromDeckFolderWithFullPath(string absolutePathOfDeckFile)
         {
             Deck readingDeck = null;
             if (!File.Exists(absolutePathOfDeckFile))
@@ -495,46 +495,46 @@ namespace Leitner_System_Transfered_2.Model
             string path = Path.Combine(currentFolderWithDecksFullPath, deckToDelete.Name + ".xml");
             if (!File.Exists(path))
                 return;
-            foreach(Card card in deckToDelete.Cards)
-            {
-                string questionImagePath = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
-                string answerImagePath = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
-                if (File.Exists(questionImagePath))
-                    File.Delete(questionImagePath);
-                if (File.Exists(answerImagePath))
-                    File.Delete(answerImagePath);
-            }
+            //foreach(Card card in deckToDelete.Cards)
+            //{
+            //    string questionImagePath = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
+            //    string answerImagePath = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
+            //    if (File.Exists(questionImagePath))
+            //        File.Delete(questionImagePath);
+            //    if (File.Exists(answerImagePath))
+            //        File.Delete(answerImagePath);
+            //}
             File.Delete(path);
         }
         ///<summary>
         ///Copy image files from it's locations to deck folder if they were
         ///</summary>
         ///<param name="currentCard">current card to save</param>
-        public static void CopyNewImagesToDeckFolder(Card currentCard, string questionAbsoluteImagePath, string answerAbsoluteImagePath, out string relativeAnswerImagePath, out string relativeQuestionImagePath)
-        {
-            relativeQuestionImagePath = "";
-            relativeAnswerImagePath = "";
-            string oldQuestionImageAbsolitePath = Path.Combine(currentFolderWithDecksFullPath, currentCard.RelativeToDeckFolderQuestionImagePath);
-            string oldAnswerImageAbsolitePath = Path.Combine(currentFolderWithDecksFullPath, currentCard.RelativeToDeckFolderAnswerImagePath);
-            if (questionAbsoluteImagePath != oldQuestionImageAbsolitePath)
-            {
-                if (File.Exists(oldQuestionImageAbsolitePath))
-                    File.Delete(oldQuestionImageAbsolitePath);
-                if (!String.IsNullOrEmpty(questionAbsoluteImagePath))
-                    relativeQuestionImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(questionAbsoluteImagePath, true);
-            }
-            else
-                relativeQuestionImagePath = currentCard.RelativeToDeckFolderQuestionImagePath;
-            if (answerAbsoluteImagePath != oldAnswerImageAbsolitePath)
-            {
-                if (File.Exists(oldAnswerImageAbsolitePath))
-                    File.Delete(oldAnswerImageAbsolitePath);
-                if (!String.IsNullOrEmpty(answerAbsoluteImagePath))
-                    relativeAnswerImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(answerAbsoluteImagePath, false);
-            }
-            else
-                relativeAnswerImagePath = currentCard.RelativeToDeckFolderAnswerImagePath;
-        }
+        //public static void CopyNewImagesToDeckFolder(Card currentCard, string questionAbsoluteImagePath, string answerAbsoluteImagePath, out string relativeAnswerImagePath, out string relativeQuestionImagePath)
+        //{
+        //    relativeQuestionImagePath = "";
+        //    relativeAnswerImagePath = "";
+        //    string oldQuestionImageAbsolitePath = Path.Combine(currentFolderWithDecksFullPath, currentCard.RelativeToDeckFolderQuestionImagePath);
+        //    string oldAnswerImageAbsolitePath = Path.Combine(currentFolderWithDecksFullPath, currentCard.RelativeToDeckFolderAnswerImagePath);
+        //    if (questionAbsoluteImagePath != oldQuestionImageAbsolitePath)
+        //    {
+        //        if (File.Exists(oldQuestionImageAbsolitePath))
+        //            File.Delete(oldQuestionImageAbsolitePath);
+        //        if (!String.IsNullOrEmpty(questionAbsoluteImagePath))
+        //            relativeQuestionImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(questionAbsoluteImagePath, true);
+        //    }
+        //    else
+        //        relativeQuestionImagePath = currentCard.RelativeToDeckFolderQuestionImagePath;
+        //    if (answerAbsoluteImagePath != oldAnswerImageAbsolitePath)
+        //    {
+        //        if (File.Exists(oldAnswerImageAbsolitePath))
+        //            File.Delete(oldAnswerImageAbsolitePath);
+        //        if (!String.IsNullOrEmpty(answerAbsoluteImagePath))
+        //            relativeAnswerImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(answerAbsoluteImagePath, false);
+        //    }
+        //    else
+        //        relativeAnswerImagePath = currentCard.RelativeToDeckFolderAnswerImagePath;
+        //}
         ///<summary>
         ///Copy image file from it's location to decks folder and return relative to deck folder path of image copy
         ///</summary>
