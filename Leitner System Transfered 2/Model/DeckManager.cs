@@ -150,7 +150,7 @@ namespace Leitner_System_Transfered_2.Model
                 return;
             CopyCardsToDeck(buffer, CurrentDeck);
         }
-        public static void SaveCards(List<Card> cards, List<string> question, List<string> answer, List<BitmapImage> questionImage, List<BitmapImage> answerImage)
+        public static void SaveCards(List<Card> cards, List<string> question, List<string> answer, List<byte[]> questionImage, List<byte[]> answerImage)
         {
             //Cards fromthe same deck!!!!
             if (cards.Count == 0)
@@ -181,7 +181,7 @@ namespace Leitner_System_Transfered_2.Model
                 //    qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderQuestionImagePath);
                 //if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderAnswerImagePath))
                 //    answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderAnswerImagePath);
-                SaveCards(new List<Card>() { newCard }, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<BitmapImage>() { cardToCopy.QuestionImage }, new List<BitmapImage>() { cardToCopy.AnswerImage });
+                SaveCards(new List<Card>() { newCard }, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<byte[]>() { cardToCopy.QuestionImage }, new List<byte[]>() { cardToCopy.AnswerImage });
                 
             }
              FileManager.SaveDeckOrUpdateDeckFile(deck);
@@ -220,7 +220,7 @@ namespace Leitner_System_Transfered_2.Model
             }
             Dictionary<string, string> importContent = FileManager.ImportExcelFile(absolutePath);
             List<Card> importedCards = new List<Card>();
-            List<BitmapImage> questionImagesPaths = new List<BitmapImage>();
+            List<byte[]> questionImagesPaths = new List<byte[]>();
 
             for(int a=0;a<importContent.Keys.Count;a++)
             {

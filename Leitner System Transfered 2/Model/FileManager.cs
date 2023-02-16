@@ -576,11 +576,6 @@ namespace Leitner_System_Transfered_2.Model
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.EndInit();
                 stream.Close();
-                ImageConverter converter = new ImageConverter();
-                byte[] array;
-                System.Drawing.Image img = Image.FromFile(path);
-                byte[] bTemp = (byte[])converter.ConvertTo(img, typeof(byte[]));
-                bitmap = ImageFromBuffer(bTemp);
                 return bitmap;
             }
             catch(Exception e)
@@ -593,13 +588,43 @@ namespace Leitner_System_Transfered_2.Model
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.EndInit();
                 stream.Close();
-                ImageConverter converter = new ImageConverter();
-                byte[] array;
-                System.Drawing.Image img = Image.FromFile(path);
-                byte[] bTemp = (byte[])converter.ConvertTo(img, typeof(byte[]));
-                bitmap = ImageFromBuffer(bTemp);
                 return bitmap;
             }
+        }
+        public static BitmapImage ImageFromByteArray(Byte[] bytes)
+        {
+            if (bytes == null || bytes.Length == 0)
+                return null;
+            MemoryStream stream = new MemoryStream(bytes);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            image.StreamSource = stream;
+            image.EndInit();
+            return image;
+        }
+        public static Bitmap BitmapImageToBitmap(BitmapImage bitmapImage)
+        {
+            // BitmapImage bitmapImage = new BitmapImage(new Uri("../Images/test.png", UriKind.Relative));
+
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                return new Bitmap(bitmap);
+            }
+        }
+        public static byte[] ByteFromImageFile(string filePath)
+        {
+            if (String.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                return null;
+            BitmapImage image = FileManager.CreateImageWithFullPath(filePath);
+            Bitmap bitmap = BitmapImageToBitmap(image);
+            ImageConverter converter = new ImageConverter();
+            //        //byte[] array;
+            return (byte[])converter.ConvertTo(bitmap, typeof(byte[]));
         }
     }
 }

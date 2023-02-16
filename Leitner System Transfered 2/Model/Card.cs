@@ -28,36 +28,36 @@ namespace Leitner_System_Transfered_2.Model
         [DataMember]
         public string Answer { get; private set; }
         [DataMember]
-        private byte[] AnswerImageBytes;
+        public byte[] AnswerImage { get; private set; }
         [DataMember]
-        private byte[] QuestionImageBytes;
-        public BitmapImage AnswerImage {
-            get
-            {
-                return ImageFromByteArray(AnswerImageBytes);
-            }
-            set
-            {
-                ImageConverter converter = new ImageConverter();
-                //byte[] array;
-                //System.Drawing.Image img = Image.FromFile(path);
-                //Image i =b as Image;
-                AnswerImageBytes = (byte[])converter.ConvertTo(value, typeof(byte[]));
-            }
-        }
-        public BitmapImage QuestionImage {
-            get
-            {
-                return ImageFromByteArray(QuestionImageBytes);
-            }
-            set
-            {
-                ImageConverter converter = new ImageConverter();
-                //byte[] array;
-                //System.Drawing.Image img = Image.FromFile(path);
-                QuestionImageBytes = (byte[])converter.ConvertTo(value, typeof(byte[]));
-            }
-        }
+        public byte[] QuestionImage { get; private set; }
+        //public BitmapImage AnswerImage {
+        //    get
+        //    {
+        //        return ImageFromByteArray(AnswerImageBytes);
+        //    }
+        //    set
+        //    {
+        //        ImageConverter converter = new ImageConverter();
+        //        //byte[] array;
+        //        //System.Drawing.Image img = Image.FromFile(path);
+        //        //Image i =b as Image;
+        //        AnswerImageBytes = (byte[])converter.ConvertTo(value, typeof(byte[]));
+        //    }
+        //}
+        //public BitmapImage QuestionImage {
+        //    get
+        //    {
+        //        return ImageFromByteArray(QuestionImageBytes);
+        //    }
+        //    set
+        //    {
+        //        ImageConverter converter = new ImageConverter();
+        //        //byte[] array;
+        //        //System.Drawing.Image img = Image.FromFile(path);
+        //        QuestionImageBytes = (byte[])converter.ConvertTo(value, typeof(byte[]));
+        //    }
+        //}
         [DataMember]
         public DateTime LastRepetitionTime { get; private set; }
         [DataMember]
@@ -78,7 +78,7 @@ namespace Leitner_System_Transfered_2.Model
         /// <param name="answer">Answer of this card</param>
         /// <param name="relativeToDeckFolderAnswerImagePath">Relative to deck folder path of answer image</param>
         /// <param name="relativeToDeckFolderQuestionImagePath">Relative to deck folder path of question image</param>
-        public Card(Deck parentDeck, string question, string answer, BitmapImage questionImage=null, BitmapImage answerImage=null)
+        public Card(Deck parentDeck, string question, string answer, byte[] questionImage=null, byte[] answerImage = null)
         {
             this.ParentDeck = parentDeck;
             Question = question;
@@ -90,7 +90,7 @@ namespace Leitner_System_Transfered_2.Model
             RepitionFrequensy = RepitionFrequensy.Daily;
             ReverseRepitionFrequensy = RepitionFrequensy.Daily;
         }
-        public void SetNewFields(string question, string answer, BitmapImage questionImage, BitmapImage answerImage)
+        public void SetNewFields(string question, string answer, byte[] questionImage = null, byte[] answerImage = null)
         {
             Question = question;
             Answer = answer;
@@ -176,17 +176,7 @@ namespace Leitner_System_Transfered_2.Model
                 return true;
             return false;
         }
-        private static BitmapImage ImageFromByteArray(Byte[] bytes)
-        {
-            if (bytes == null || bytes.Length == 0)
-                return null;
-            MemoryStream stream = new MemoryStream(bytes);
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.StreamSource = stream;
-            image.EndInit();
-            return image;
-        }
+        
     }
     /// <summary>
     /// Repitition intervals

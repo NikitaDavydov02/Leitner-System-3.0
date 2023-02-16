@@ -52,11 +52,11 @@ namespace Leitner_System_Transfered_2.ViewModel
                 //    cardAbsoluteQuestionImagePath = Path.Combine(FileManager.currentFolderWithDecksFullPath);
                 if ((!straightOrReverse && Question == Card.Question &&
                 Answer == Card.Answer &&
-                AnswerImage == Card.AnswerImage &&
-                QuestionImage==Card.QuestionImage) || (straightOrReverse && Question == Card.Answer &&
+                AnswerImageByte == Card.AnswerImage &&
+                QuestionImageByte==Card.QuestionImage) || (straightOrReverse && Question == Card.Answer &&
                 Answer == Card.Question &&
-                AnswerImage == Card.QuestionImage &&
-                QuestionImage == Card.AnswerImage))
+                AnswerImageByte == Card.QuestionImage &&
+                QuestionImageByte == Card.AnswerImage))
                     return false;
                 else
                     return true;
@@ -92,8 +92,8 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         private string answer;
 
-        private BitmapImage SuggestedQuestionImage;
-        private BitmapImage SuggestedAnswrImage;
+        private byte[] QuestionImageByte;
+        private byte[] AnswerImageByte;
         public BitmapImage QuestionImage { get; private set; }
         public BitmapImage AnswerImage { get; private set; }
         private bool straightOrReverse;
@@ -113,18 +113,18 @@ namespace Leitner_System_Transfered_2.ViewModel
             {
                 Question = card.Question;
                 Answer = card.Answer;
-                QuestionImage = card.QuestionImage;
-                AnswerImage = card.AnswerImage;
+                QuestionImageByte = card.QuestionImage;
+                AnswerImageByte = card.AnswerImage;
             }
             else
             {
                 Answer = card.Question;
                 Question = card.Answer;
-                QuestionImage = card.AnswerImage;
-                AnswerImage = card.QuestionImage;
+                QuestionImageByte = card.AnswerImage;
+                AnswerImageByte = card.QuestionImage;
             }
-            SuggestedAnswrImage = null;
-            SuggestedQuestionImage = null;
+            QuestionImage = FileManager.ImageFromByteArray(QuestionImageByte);
+            AnswerImage = FileManager.ImageFromByteArray(AnswerImageByte);
             //Было добавлено
             OnPropertyChanged("AnswerImage");
             OnPropertyChanged("QuestionImage");
@@ -142,9 +142,9 @@ namespace Leitner_System_Transfered_2.ViewModel
         public void SaveThisCard()
         {
             if (!straightOrReverse)
-                DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Question }, new List<string>() { Answer }, new List<BitmapImage>() { QuestionImage }, new List<BitmapImage>() { AnswerImage });
+                DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Question }, new List<string>() { Answer }, new List<byte[]>() { QuestionImageByte }, new List<byte[]>() { AnswerImageByte });
             else
-                DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Answer }, new List<string>() { Question }, new List<BitmapImage>() { AnswerImage }, new List<BitmapImage>() { QuestionImage });
+                DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Answer }, new List<string>() { Question }, new List<byte[]>() { AnswerImageByte }, new List<byte[]>() { QuestionImageByte });
 
             MakeCardViewModelFromCardModel(Card, straightOrReverse);
         }
@@ -163,6 +163,7 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             //AbsoluteQuestionImagePath = absoluteImagePath;
             QuestionImage = FileManager.CreateImageWithFullPath(absoluteImagePath);
+            QuestionImageByte= FileManager.ByteFromImageFile(absoluteImagePath);
             OnPropertyChanged("QuestionImage");
             OnPropertyChanged("NameOfCard");
         }
@@ -170,6 +171,7 @@ namespace Leitner_System_Transfered_2.ViewModel
         {
             //AbsoluteAnswerImagePath = absoluteImagePath;
             AnswerImage = FileManager.CreateImageWithFullPath(absoluteImagePath);
+            AnswerImageByte = FileManager.ByteFromImageFile(absoluteImagePath);
             OnPropertyChanged("AnswerImage");
             OnPropertyChanged("NameOfCard");
         }
