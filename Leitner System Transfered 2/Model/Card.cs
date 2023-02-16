@@ -28,9 +28,13 @@ namespace Leitner_System_Transfered_2.Model
         [DataMember]
         public string Answer { get; private set; }
         [DataMember]
-        public byte[] AnswerImage { get; private set; }
+        public string RelativeToDeckFolderAnswerImagePath { get; private set; }
         [DataMember]
-        public byte[] QuestionImage { get; private set; }
+        public string RelativeToDeckFolderQuestionImagePath { get; private set; }
+        [DataMember]
+        public byte[] AnswerImageByte { get; private set; }
+        [DataMember]
+        public byte[] QuestionImageByte { get; private set; }
         //public BitmapImage AnswerImage {
         //    get
         //    {
@@ -83,8 +87,8 @@ namespace Leitner_System_Transfered_2.Model
             this.ParentDeck = parentDeck;
             Question = question;
             Answer = answer;
-            QuestionImage= questionImage;
-            AnswerImage = answerImage;
+            QuestionImageByte = questionImage;
+            AnswerImageByte = answerImage;
             LastRepetitionTime = DateTime.Now;
             LastReverseRepetitionTime = DateTime.Now;
             RepitionFrequensy = RepitionFrequensy.Daily;
@@ -94,9 +98,17 @@ namespace Leitner_System_Transfered_2.Model
         {
             Question = question;
             Answer = answer;
-            QuestionImage=questionImage;
-            AnswerImage = answerImage;
+            QuestionImageByte = questionImage;
+            AnswerImageByte = answerImage;
         }
+        //public void SetNewFieldsLegacyFromFirstVersion(string question, string answer, string absoluteImagePath, string relativeQuestionImagePath)
+        //{
+        //    Question = question;
+        //    Answer = answer;
+        //    string absoluteAnswerImagePath = Path.Combine()
+        //    QuestionImageByte = questionImage;
+        //    AnswerImageByte = answerImage;
+        //}
         ///<summary>
         ///Update last repitition time by answer 
         ///</summary>

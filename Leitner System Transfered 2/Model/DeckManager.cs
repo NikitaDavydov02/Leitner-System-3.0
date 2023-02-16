@@ -181,7 +181,7 @@ namespace Leitner_System_Transfered_2.Model
                 //    qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderQuestionImagePath);
                 //if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderAnswerImagePath))
                 //    answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderAnswerImagePath);
-                SaveCards(new List<Card>() { newCard }, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<byte[]>() { cardToCopy.QuestionImage }, new List<byte[]>() { cardToCopy.AnswerImage });
+                SaveCards(new List<Card>() { newCard }, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<byte[]>() { cardToCopy.QuestionImageByte }, new List<byte[]>() { cardToCopy.AnswerImageByte });
                 
             }
              FileManager.SaveDeckOrUpdateDeckFile(deck);
