@@ -28,9 +28,9 @@ namespace Leitner_System_Transfered_2.Model
         [DataMember]
         public string Answer { get; private set; }
         [DataMember]
-        public string RelativeToDeckFolderAnswerImagePath { get; private set; }
+        public string RelativeToDeckFolderAnswerImagePath { get; set; }
         [DataMember]
-        public string RelativeToDeckFolderQuestionImagePath { get; private set; }
+        public string RelativeToDeckFolderQuestionImagePath { get; set; }
         [DataMember]
         public byte[] AnswerImageByte { get; private set; }
         [DataMember]

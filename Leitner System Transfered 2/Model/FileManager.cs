@@ -72,11 +72,13 @@ namespace Leitner_System_Transfered_2.Model
                     {
                         string absoluteQuestionImagePath = Path.Combine(currentFolderWithDecksFullPath,card.RelativeToDeckFolderQuestionImagePath);
                         questionImage = ByteFromImageFile(absoluteQuestionImagePath);
+                        card.RelativeToDeckFolderQuestionImagePath = "";
                     }
                     if (!String.IsNullOrEmpty(card.RelativeToDeckFolderAnswerImagePath))
                     {
                         string absoluteAnswerImagePath = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
                         answerImage = ByteFromImageFile(absoluteAnswerImagePath);
+                        card.RelativeToDeckFolderAnswerImagePath = "";
                     }
                     ////string absoluteQuestionImagePath = Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderQuestionImagePath);
                     //string absoluteAnwerImagePath = Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderAnswerImagePath);
@@ -89,6 +91,7 @@ namespace Leitner_System_Transfered_2.Model
 
                     card.SetNewFields(card.Question, card.Answer, questionImage, answerImage);
                 }
+                SaveDeckOrUpdateDeckFile(deck);
             }
             MakeBackupOfDecksFromCurrentFolder(output);
             if (output.Count == 0)
@@ -404,7 +407,7 @@ namespace Leitner_System_Transfered_2.Model
                 return "";
             int i = 1;
             string path = Path.Combine(currentFolderWithDecksFullPath, prefix +" " + i.ToString()+".xml");
-            while (Directory.Exists(path))
+            while (File.Exists(path))
             {
                 i++;
                 path = Path.Combine(currentFolderWithDecksFullPath, prefix + " " + i.ToString()+".xml");
