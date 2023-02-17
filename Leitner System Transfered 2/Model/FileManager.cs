@@ -11,6 +11,7 @@ using System.Runtime.Serialization;
 //using Aspose.Cells;
 using Excel=Microsoft.Office.Interop.Excel;
 using System.Windows.Media.Imaging;
+using System.Drawing;
 
 
 
@@ -264,18 +265,60 @@ namespace Leitner_System_Transfered_2.Model
         //{
         //    await Task.Run(() => ExportExcelFile(absoluteFilePath, input));
         //}
-        public static void ExportExcelFile(string absoluteFilePath, Dictionary<string,string> input)
+        public static void ExportExcelFile(string absoluteFilePath, Deck deckToExport)
         {
             if (String.IsNullOrEmpty(absoluteFilePath))
                 return;
+            List<string> questions = new List<string>();
+            List<string> answers = new List<string>();
+            List<string> questionImages = new List<string>();
+            List<string> answerImages = new List<string>();
+            foreach(Card card in deckToExport.Cards)
+            {
+                questions.Add(card.Question);
+                answers.Add(card.Answer);
+                string questionImagePath = "";
+                string answerImagePath = "";
+                if (!String.IsNullOrEmpty(card.RelativeToDeckFolderQuestionImagePath))
+                    questionImagePath = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
+                if (!String.IsNullOrEmpty(card.RelativeToDeckFolderAnswerImagePath))
+                    answerImagePath = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
+                byte[] questionByte = null;
+                byte[] answerByte = null;
+                if (!String.IsNullOrEmpty(questionImagePath))
+                    questionByte = ByteFromImageFile(questionImagePath);
+                if (!String.IsNullOrEmpty(answerImagePath))
+                    answerByte = ByteFromImageFile(answerImagePath);
+                string questionImageByteString = "";
+                string answerImageByteString = "";
+                if (questionByte != null)
+                {
+                    foreach (byte b in questionByte)
+                    {
+                        questionImageByteString += b.ToString();
+                    }
+                }
+                if (answerByte != null)
+                {
+                    foreach (byte b in answerByte)
+                    {
+                        answerImageByteString += b.ToString()+".";
+                    }
+                }
+                questionImages.Add(questionImageByteString);
+                answerImages.Add(answerImageByteString);
+            }
+
             Excel.Application application = new Excel.Application();
             application.Workbooks.Add();
             Excel.Worksheet workSheet = application.ActiveSheet;
             
-            for (int i = 0; i < input.Count; i++)
+            for (int i = 0; i < deckToExport.Cards.Count; i++)
             {
-                workSheet.Cells[i + 1, "A"] = input.Keys.ElementAt(i);
-                workSheet.Cells[i + 1, "B"] = input[input.Keys.ElementAt(i)];
+                workSheet.Cells[i + 1, "A"] = questions[i];
+                workSheet.Cells[i + 1, "B"] = answers[i];
+                workSheet.Cells[i + 1, "C"] = questionImages[i];
+                workSheet.Cells[i + 1, "D"] = answerImages[i];
             }
             workSheet.Columns[1].AutoFit();
             workSheet.Columns[2].AutoFit();
@@ -566,7 +609,7 @@ namespace Leitner_System_Transfered_2.Model
                 stream.Close();
                 return bitmap;
             }
-            catch
+            catch (Exception e)
             {
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
@@ -578,6 +621,41 @@ namespace Leitner_System_Transfered_2.Model
                 stream.Close();
                 return bitmap;
             }
+        }
+        public static BitmapImage ImageFromByteArray(Byte[] bytes)
+        {
+            if (bytes == null || bytes.Length == 0)
+                return null;
+            MemoryStream stream = new MemoryStream(bytes);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            image.StreamSource = stream;
+            image.EndInit();
+            return image;
+        }
+        public static Bitmap BitmapImageToBitmap(BitmapImage bitmapImage)
+        {
+            // BitmapImage bitmapImage = new BitmapImage(new Uri("../Images/test.png", UriKind.Relative));
+
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                return new Bitmap(bitmap);
+            }
+        }
+        public static byte[] ByteFromImageFile(string filePath)
+        {
+            if (String.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                return null;
+            BitmapImage image = FileManager.CreateImageWithFullPath(filePath);
+            Bitmap bitmap = BitmapImageToBitmap(image);
+            ImageConverter converter = new ImageConverter();
+            //        //byte[] array;
+            return (byte[])converter.ConvertTo(bitmap, typeof(byte[]));
         }
     }
 }

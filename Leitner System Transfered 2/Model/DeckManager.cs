@@ -234,13 +234,13 @@ namespace Leitner_System_Transfered_2.Model
                 MessageBox.Show("Deck is not choosen is not choosen");
                 return;
             }
-            Dictionary<string, string> exportContent = new Dictionary<string, string>();
-            foreach(Card card in CurrentDeck.Cards)
-            {
-                if (!exportContent.Keys.Contains(card.Question))
-                    exportContent.Add(card.Question, card.Answer);
-            }
-            FileManager.ExportExcelFile(absolutePath, exportContent);
+            //Dictionary<string, string> exportContent = new Dictionary<string, string>();
+            //foreach(Card card in CurrentDeck.Cards)
+            //{
+            //    if (!exportContent.Keys.Contains(card.Question))
+            //        exportContent.Add(card.Question, card.Answer);
+            //}
+            FileManager.ExportExcelFile(absolutePath, CurrentDeck);
 
         }
     }
