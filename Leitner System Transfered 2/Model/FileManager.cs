@@ -64,21 +64,26 @@ namespace Leitner_System_Transfered_2.Model
                 else
                     MessageBox.Show("Reading of deck from " + deckFileName + "was not sucssesful.");
                 //Legacy from second version
+                bool convertstionVasPerformed = false;
                 foreach (Card card in deck.Cards)
                 {
                     byte[] questionImage = card.QuestionImageByte;
                     byte[] answerImage = card.AnswerImageByte;
+                    if (String.IsNullOrEmpty(card.RelativeToDeckFolderQuestionImagePath) && String.IsNullOrEmpty(card.RelativeToDeckFolderAnswerImagePath))
+                        continue;
                     if (!String.IsNullOrEmpty(card.RelativeToDeckFolderQuestionImagePath))
                     {
                         string absoluteQuestionImagePath = Path.Combine(currentFolderWithDecksFullPath,card.RelativeToDeckFolderQuestionImagePath);
                         questionImage = ByteFromImageFile(absoluteQuestionImagePath);
                         card.RelativeToDeckFolderQuestionImagePath = "";
+                        convertstionVasPerformed = true;
                     }
                     if (!String.IsNullOrEmpty(card.RelativeToDeckFolderAnswerImagePath))
                     {
                         string absoluteAnswerImagePath = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
                         answerImage = ByteFromImageFile(absoluteAnswerImagePath);
                         card.RelativeToDeckFolderAnswerImagePath = "";
+                        convertstionVasPerformed = true;
                     }
                     ////string absoluteQuestionImagePath = Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderQuestionImagePath);
                     //string absoluteAnwerImagePath = Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderAnswerImagePath);
@@ -91,7 +96,8 @@ namespace Leitner_System_Transfered_2.Model
 
                     card.SetNewFields(card.Question, card.Answer, questionImage, answerImage);
                 }
-                SaveDeckOrUpdateDeckFile(deck);
+                if(convertstionVasPerformed)
+                    SaveDeckOrUpdateDeckFile(deck);
             }
             MakeBackupOfDecksFromCurrentFolder(output);
             if (output.Count == 0)
