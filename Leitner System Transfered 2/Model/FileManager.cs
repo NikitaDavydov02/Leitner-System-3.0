@@ -265,6 +265,7 @@ namespace Leitner_System_Transfered_2.Model
         //{
         //    await Task.Run(() => ExportExcelFile(absoluteFilePath, input));
         //}
+        
         public static void ExportExcelFile(string absoluteFilePath, Deck deckToExport)
         {
             if (String.IsNullOrEmpty(absoluteFilePath))
@@ -285,25 +286,17 @@ namespace Leitner_System_Transfered_2.Model
                     answerImagePath = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
                 byte[] questionByte = null;
                 byte[] answerByte = null;
-                if (!String.IsNullOrEmpty(questionImagePath))
-                    questionByte = ByteFromImageFile(questionImagePath);
-                if (!String.IsNullOrEmpty(answerImagePath))
-                    answerByte = ByteFromImageFile(answerImagePath);
                 string questionImageByteString = "";
                 string answerImageByteString = "";
-                if (questionByte != null)
+                if (!String.IsNullOrEmpty(questionImagePath))
                 {
-                    foreach (byte b in questionByte)
-                    {
-                        questionImageByteString += b.ToString();
-                    }
+                    questionByte = ByteFromImageFile(questionImagePath);
+                    questionImageByteString= System.Text.Encoding.ASCII.GetString(questionByte);
                 }
-                if (answerByte != null)
+                if (!String.IsNullOrEmpty(answerImagePath))
                 {
-                    foreach (byte b in answerByte)
-                    {
-                        answerImageByteString += b.ToString()+".";
-                    }
+                    answerByte = ByteFromImageFile(answerImagePath);
+                    answerImageByteString = System.Text.Encoding.ASCII.GetString(answerByte);
                 }
                 questionImages.Add(questionImageByteString);
                 answerImages.Add(answerImageByteString);
@@ -338,10 +331,15 @@ namespace Leitner_System_Transfered_2.Model
         //{
         //    return await Task.Run(() => ImportExcelFile(absoluteFilePath));
         //}
-        public static Dictionary<string, string> ImportExcelFile(string absoluteFilePath)
+        public static void ImportExcelFile(string absoluteFilePath, out List<string> questions, out List<string> answers, out List<string> questionsImageRelativePath, out List<string> answersImageRelativePath)
         {
+            questions = new List<string>();
+            answers = new List<string>();
+            questionsImageRelativePath = new List<string>();
+            answersImageRelativePath = new List<string>();
+
             if (String.IsNullOrEmpty(absoluteFilePath))
-                return null;
+                return;
             Excel.Workbook workbook = null;
             Excel.Application application = new Excel.Application();
             try
@@ -353,20 +351,21 @@ namespace Leitner_System_Transfered_2.Model
             catch(Exception ex)
             {
                 MessageBox.Show("Import was not susessfull  " + absoluteFilePath + "\n" + "\n" + ex.Message + "\n");
-                return null;
+                return;
             }
             if (workbook == null)
-                return null;
+                return;
             Excel.Worksheet excelSheet = workbook.Sheets[1];
             Excel.Range range = excelSheet.UsedRange;
             int rows = range.Rows.Count;
-            Dictionary<string, string> output = new Dictionary<string, string>();
 
             // Цикл по строкам
             for (int i = 1; i <= rows; i++)
             {
                 string question;
                 string answer;
+                string questionImageByte;
+                string answerImageByte;
                 try
                 {
                     question=excelSheet.Cells[i, 1].Value.ToString();
@@ -383,13 +382,24 @@ namespace Leitner_System_Transfered_2.Model
                 {
                     answer = "";
                 }
-                if(!output.ContainsKey(question))
-                    output.Add(question, answer);
+                try
+                {
+                    answerImageByte = excelSheet.Cells[i, 4].Value.ToString();
+                }
+                catch
+                {
+                    answerImageByte = "";
+                }
+                questions.Add(question);
+                answers.Add(answer);
+                questionsImageRelativePath.Add("");
+                answersImageRelativePath.Add("");
+                byte[] answerByteArray = System.Text.Encoding.ASCII.GetBytes(answerImageByte);
             }
             //
             application.Quit();
             System.Runtime.InteropServices.Marshal.ReleaseComObject(application);
-            return output;
+            return;
         }
 
         /// <summary>

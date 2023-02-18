@@ -214,16 +214,20 @@ namespace Leitner_System_Transfered_2.Model
                 MessageBox.Show("Deck is not choosen is not choosen");
                 return;
             }
-            Dictionary<string, string> importContent = FileManager.ImportExcelFile(absolutePath);
+            List<string> question = new List<string>();
+            List<string> answer = new List<string>();
+            List<string> questionImagesRelativePath = new List<string>();
+            List<string> answerImagesRelativePath = new List<string>();
+            FileManager.ImportExcelFile(absolutePath, out question, out answer, out questionImagesRelativePath, out answerImagesRelativePath);
             List<Card> importedCards = new List<Card>();
-            List<string> questionImagesPaths = new List<string>();
+            //List<string> questionImagesPaths = new List<string>();
 
-            for(int a=0;a<importContent.Keys.Count;a++)
+            for(int a=0;a<question.Count;a++)
             {
                 importedCards.Add(CurrentDeck.CreateNewCard());
-                questionImagesPaths.Add("");
+                //questionImagesPaths.Add("");
             }
-            SaveCards(importedCards, importContent.Keys.ToList<string>(), importContent.Values.ToList<string>(), questionImagesPaths, questionImagesPaths);
+            SaveCards(importedCards, question, answer, questionImagesRelativePath, answerImagesRelativePath);
         }
         public static void ExportCurrentDeckInExcelFile(string absolutePath)
         {
