@@ -360,7 +360,7 @@ namespace Leitner_System_Transfered_2.Model
                 return "";
             int i = 1;
             string path = Path.Combine(currentFolderWithDecksFullPath, prefix +" " + i.ToString()+".xml");
-            while (Directory.Exists(path))
+            while (File.Exists(path))
             {
                 i++;
                 path = Path.Combine(currentFolderWithDecksFullPath, prefix + " " + i.ToString()+".xml");
