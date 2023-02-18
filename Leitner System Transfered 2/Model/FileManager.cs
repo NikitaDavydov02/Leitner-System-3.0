@@ -96,6 +96,8 @@ namespace Leitner_System_Transfered_2.Model
                 {
                     string relativeQuestionImagePath = "";
                     string relativeAnswerImagePath = "";
+                    if (card.RelativeToDeckFolderQuestionImagePath == "question366")
+                        ;
                     if (!String.IsNullOrEmpty(card.RelativeToDeckFolderQuestionImagePath))
                         relativeQuestionImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderQuestionImagePath), true);
                     if (!String.IsNullOrEmpty(card.RelativeToDeckFolderAnswerImagePath))
