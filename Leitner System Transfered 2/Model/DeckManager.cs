@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
+using System.Windows.Media.Imaging;
+using System.Xml;
+using System.Drawing;
 
 namespace Leitner_System_Transfered_2.Model
 {
@@ -147,7 +150,7 @@ namespace Leitner_System_Transfered_2.Model
                 return;
             CopyCardsToDeck(buffer, CurrentDeck);
         }
-        public static void SaveCards(List<Card> cards, List<string> question, List<string> answer, List<string> absoluteQuestionImagePath, List<string> absoluteAnswerImagePath)
+        public static void SaveCards(List<Card> cards, List<string> question, List<string> answer, List<byte[]> questionImage, List<byte[]> answerImage)
         {
             //Cards fromthe same deck!!!!
             if (cards.Count == 0)
@@ -174,13 +177,13 @@ namespace Leitner_System_Transfered_2.Model
             foreach(Card cardToCopy in cardsToCopy)
             {
                 Card newCard = deck.CreateNewCard();
-                string answrAbsolutImagPath = "";
-                string qustionAbsolutImagPath = "";
-                if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderQuestionImagePath))
-                    qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderQuestionImagePath);
-                if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderAnswerImagePath))
-                    answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderAnswerImagePath);
-                SaveCards(new List<Card>() { newCard }, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<string>() { qustionAbsolutImagPath }, new List<string>() { answrAbsolutImagPath });
+                //string answrAbsolutImagPath = "";
+                //string qustionAbsolutImagPath = "";
+                //if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderQuestionImagePath))
+                //    qustionAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderQuestionImagePath);
+                //if (!String.IsNullOrEmpty(cardToCopy.RelativeToDeckFolderAnswerImagePath))
+                //    answrAbsolutImagPath = Path.Combine(FileManager.currentFolderWithDecksFullPath, cardToCopy.RelativeToDeckFolderAnswerImagePath);
+                SaveCards(new List<Card>() { newCard }, new List<string>() { cardToCopy.Question }, new List<string>() { cardToCopy.Answer }, new List<byte[]>() { cardToCopy.QuestionImageByte }, new List<byte[]>() { cardToCopy.AnswerImageByte });
                 
             }
              FileManager.SaveDeckOrUpdateDeckFile(deck);
@@ -219,12 +222,12 @@ namespace Leitner_System_Transfered_2.Model
             }
             Dictionary<string, string> importContent = FileManager.ImportExcelFile(absolutePath);
             List<Card> importedCards = new List<Card>();
-            List<string> questionImagesPaths = new List<string>();
+            List<byte[]> questionImagesPaths = new List<byte[]>();
 
             for(int a=0;a<importContent.Keys.Count;a++)
             {
                 importedCards.Add(CurrentDeck.CreateNewCard());
-                questionImagesPaths.Add("");
+                questionImagesPaths.Add(null);
             }
             SaveCards(importedCards, importContent.Keys.ToList<string>(), importContent.Values.ToList<string>(), questionImagesPaths, questionImagesPaths);
         }

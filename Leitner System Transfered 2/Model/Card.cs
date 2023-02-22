@@ -7,6 +7,9 @@ using System.Runtime.Serialization;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Imaging;
 using System.IO;
+using System.Windows.Media.Imaging;
+using System.Xml;
+using System.Drawing;
 
 namespace Leitner_System_Transfered_2.Model
 {
@@ -52,13 +55,13 @@ namespace Leitner_System_Transfered_2.Model
         /// <param name="answer">Answer of this card</param>
         /// <param name="relativeToDeckFolderAnswerImagePath">Relative to deck folder path of answer image</param>
         /// <param name="relativeToDeckFolderQuestionImagePath">Relative to deck folder path of question image</param>
-        public Card(Deck parentDeck, string question, string answer, string relativeToFoderWithDecksAnswerImagePath = "", string relativeToFoderWithDecksQuestionImagePath = "")
+        public Card(Deck parentDeck, string question, string answer, byte[] questionImage=null, byte[] answerImage = null)
         {
             this.ParentDeck = parentDeck;
             Question = question;
             Answer = answer;
-            RelativeToDeckFolderQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
-            RelativeToDeckFolderAnswerImagePath = relativeToFoderWithDecksAnswerImagePath;
+            QuestionImageByte = questionImage;
+            AnswerImageByte = answerImage;
             LastRepetitionTime = DateTime.Now;
             LastReverseRepetitionTime = DateTime.Now;
             RepitionFrequensy = RepitionFrequensy.Daily;
@@ -70,6 +73,7 @@ namespace Leitner_System_Transfered_2.Model
         //    Answer = answer;
         //    RelativeToDeckFolderQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
         //    RelativeToDeckFolderAnswerImagePath = relativeToFoderWithDecksAbswerImagePath;
+
         //}
         ///<summary>
         ///Update last repitition time by answer 
@@ -150,6 +154,7 @@ namespace Leitner_System_Transfered_2.Model
                 return true;
             return false;
         }
+        
     }
     /// <summary>
     /// Repitition intervals
