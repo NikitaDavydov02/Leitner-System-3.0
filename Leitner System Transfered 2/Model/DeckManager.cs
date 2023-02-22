@@ -243,5 +243,19 @@ namespace Leitner_System_Transfered_2.Model
             FileManager.ExportExcelFile(absolutePath, exportContent);
 
         }
+        public static void CompressCurrentDeck(string pathOfFile)
+        {
+            if (String.IsNullOrEmpty(pathOfFile))
+                return;
+            if (CurrentDeck == null)
+            {
+                MessageBox.Show("Deck is not choosen is not choosen");
+                return;
+            }
+            Deck compressingDeck = new Deck(CurrentDeck.Name);
+            CopyCardsToDeck(CurrentDeck.Cards, compressingDeck);
+            CurrentDeck.Compress();
+            FileManager.SaveDeckOrUpdateDeckFile(CurrentDeck, pathOfFile);
+        }
     }
 }

@@ -21,13 +21,17 @@ namespace Leitner_System_Transfered_2.Model
         //------------------------------------- DATA MEMBERS ---------------------------------
         //--------------------------------------------------------------------------------
         [DataMember]
-        public string Question { get; private set; }
+        public string Question { get; set; }
         [DataMember]
-        public string Answer { get; private set; }
+        public string Answer { get; set; }
         [DataMember]
-        public string RelativeToDeckFolderAnswerImagePath { get; private set; }
+        public string RelativeToDeckFolderAnswerImagePath { get; set; }
         [DataMember]
-        public string RelativeToDeckFolderQuestionImagePath { get; private set; }
+        public string RelativeToDeckFolderQuestionImagePath { get; set; }
+        [DataMember]
+        public byte[] QuestionImageByte { get; set; } = null;
+        [DataMember]
+        public byte[] AnswerImageByte { get; set; } = null;
         [DataMember]
         public DateTime LastRepetitionTime { get; private set; }
         [DataMember]
@@ -60,13 +64,13 @@ namespace Leitner_System_Transfered_2.Model
             RepitionFrequensy = RepitionFrequensy.Daily;
             ReverseRepitionFrequensy = RepitionFrequensy.Daily;
         }
-        public void SetNewFields(string question, string answer, string relativeToFoderWithDecksQuestionImagePath, string relativeToFoderWithDecksAbswerImagePath)
-        {
-            Question = question;
-            Answer = answer;
-            RelativeToDeckFolderQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
-            RelativeToDeckFolderAnswerImagePath = relativeToFoderWithDecksAbswerImagePath;
-        }
+        //public void SetNewFields(string question, string answer, string relativeToFoderWithDecksQuestionImagePath, string relativeToFoderWithDecksAbswerImagePath)
+        //{
+        //    Question = question;
+        //    Answer = answer;
+        //    RelativeToDeckFolderQuestionImagePath = relativeToFoderWithDecksQuestionImagePath;
+        //    RelativeToDeckFolderAnswerImagePath = relativeToFoderWithDecksAbswerImagePath;
+        //}
         ///<summary>
         ///Update last repitition time by answer 
         ///</summary>

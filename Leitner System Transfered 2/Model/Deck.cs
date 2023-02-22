@@ -17,6 +17,8 @@ namespace Leitner_System_Transfered_2.Model
         //------------------------------------- DATA MEMBERS ---------------------------------
         //--------------------------------------------------------------------------------
         [DataMember]
+        public bool Compressed { get; private set; } = false;
+        [DataMember]
         public List<Card> Cards { get; private set; }
         [DataMember]
         public string Name { get; private set; }
@@ -77,6 +79,17 @@ namespace Leitner_System_Transfered_2.Model
             foreach (Card card in cardsToRemove)
                 Cards.Remove(card);
             FileManager.SaveDeckOrUpdateDeckFile(this);
+        }
+        public void Compress()
+        {
+            FileManager.CompressDeck(this);
+            Compressed = true;
+        }
+        public void Decompress()
+        {
+            //FileManager.CompressDeck(this);
+            s
+            Compressed = false;
         }
     }
 }

@@ -312,5 +312,11 @@ namespace Leitner_System_Transfered_2.ViewModel
                 return;
             DeckManager.ExportCurrentDeckInExcelFile(filePath);
         }
+        public void CompressCurrentDeckToExcelFile(string filePath)
+        {
+            if (String.IsNullOrEmpty(filePath))
+                return;
+            DeckManager.CompressCurrentDeck(filePath);
+        }
     }
   }
