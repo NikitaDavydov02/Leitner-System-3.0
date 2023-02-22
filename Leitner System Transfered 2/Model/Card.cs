@@ -29,9 +29,9 @@ namespace Leitner_System_Transfered_2.Model
         [DataMember]
         public string RelativeToDeckFolderQuestionImagePath { get; set; }
         [DataMember]
-        public byte[] QuestionImageByte { get; set; } = null;
+        public byte[] QuestionImageByte { get; set; }
         [DataMember]
-        public byte[] AnswerImageByte { get; set; } = null;
+        public byte[] AnswerImageByte { get; set; }
         [DataMember]
         public DateTime LastRepetitionTime { get; private set; }
         [DataMember]

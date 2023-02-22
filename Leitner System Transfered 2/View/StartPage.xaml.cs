@@ -411,13 +411,13 @@ namespace Leitner_System_Transfered_2.View
             if (viewModel == null)
                 return;
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "|*.xlsx";
-            saveFileDialog.DefaultExt = "xlsx";
-            //saveFileDialog.Filter = "|*.xml";
-            //saveFileDialog.DefaultExt = "xml";
+            //saveFileDialog.Filter = "|*.xlsx";
+            //saveFileDialog.DefaultExt = "xlsx";
+            saveFileDialog.Filter = "|*.xml";
+            saveFileDialog.DefaultExt = "xml";
             saveFileDialog.ShowDialog();
-            viewModel.ExportCurrentDeckToExcelFile(saveFileDialog.FileName);
-            //viewModel.CompressCurrentDeckToExcelFile(saveFileDialog.FileName);
+            //viewModel.ExportCurrentDeckToExcelFile(saveFileDialog.FileName);
+            viewModel.CompressCurrentDeckToExcelFile(saveFileDialog.FileName);
         }
 
         private void chooseFolderButton_Click(object sender, RoutedEventArgs e)

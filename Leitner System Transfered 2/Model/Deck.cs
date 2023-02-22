@@ -88,7 +88,7 @@ namespace Leitner_System_Transfered_2.Model
         public void Decompress()
         {
             //FileManager.CompressDeck(this);
-            s
+            
             Compressed = false;
         }
     }

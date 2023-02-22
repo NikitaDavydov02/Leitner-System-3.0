@@ -158,8 +158,11 @@ namespace Leitner_System_Transfered_2.Model
                 string relativeToDeckFolderAnswerImagePath = "";
                 if (!String.IsNullOrEmpty(absoluteAnswerImagePath[i]) || !String.IsNullOrEmpty(absoluteQuestionImagePath[i]))
                     FileManager.CopyNewImagesToDeckFolder(cards[i], absoluteQuestionImagePath[i], absoluteAnswerImagePath[i], out relativeToDeckFolderAnswerImagePath, out relativeToDeckFolderQuestionImagePath);
-                cards[i].SetNewFields(question[i], answer[i], relativeToDeckFolderQuestionImagePath, relativeToDeckFolderAnswerImagePath);
-
+                //cards[i].SetNewFields(question[i], answer[i], relativeToDeckFolderQuestionImagePath, relativeToDeckFolderAnswerImagePath);
+                cards[i].Question = question[i];
+                cards[i].Answer = answer[i];
+                cards[i].RelativeToDeckFolderQuestionImagePath = relativeToDeckFolderQuestionImagePath;
+                cards[i].RelativeToDeckFolderAnswerImagePath = relativeToDeckFolderAnswerImagePath;
                 //dsdvs
             }
             FileManager.SaveDeckOrUpdateDeckFile(cards[0].ParentDeck);
@@ -253,9 +256,17 @@ namespace Leitner_System_Transfered_2.Model
                 return;
             }
             Deck compressingDeck = new Deck(CurrentDeck.Name);
-            CopyCardsToDeck(CurrentDeck.Cards, compressingDeck);
-            CurrentDeck.Compress();
-            FileManager.SaveDeckOrUpdateDeckFile(CurrentDeck, pathOfFile);
+            foreach(Card card in CurrentDeck.Cards)
+            {
+                compressingDeck.CreateNewCard();
+                Card newCard = compressingDeck.Cards[compressingDeck.Cards.Count - 1];
+                newCard.Question = card.Question;
+                newCard.Answer = card.Answer;
+                newCard.RelativeToDeckFolderAnswerImagePath = card.RelativeToDeckFolderAnswerImagePath;
+                newCard.RelativeToDeckFolderQuestionImagePath = card.RelativeToDeckFolderQuestionImagePath;
+            }
+            compressingDeck.Compress();
+            FileManager.SaveDeckOrUpdateDeckFile(compressingDeck, pathOfFile);
         }
     }
 }
