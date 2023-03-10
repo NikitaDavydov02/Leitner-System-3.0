@@ -22,6 +22,7 @@ namespace Leitner_System_Transfered_2.Model
         public static string currentFolderWithDecksFullPath { get; private set; }
         private static string defaultFolderWithDecksPath = Path.Combine(Environment.CurrentDirectory, "Decks");
         private static string defaultBackupFolder = Path.Combine(Environment.CurrentDirectory, "Backup");
+        private static string defaultSettingPath= Path.Combine(Environment.CurrentDirectory, "settings.xml");
         private static bool readingSettings = false;
         //private static string defaultFolderWithDecksPath = "G:\\My Drive\\Планирование и отслеживание продуктивности\\Decks - Copy";
         //private static string defaultBackupFolder = "G:\\My Drive\\Программирование\\C#\\Проекты\\Leitner System\\Leitner System\\Backups";
@@ -29,20 +30,21 @@ namespace Leitner_System_Transfered_2.Model
 
         ///<summary>
         ///[Problem with optimization] 1. Return list of all decks in folder (if the folder pass is empty so return decks from default folder)
-        ///2. Return null if the process was faild
+        ///2. Return empty List if the process was faild
         ///3. Update current folder with decks path field
         ///4. If some decks were unable to read they are ignored and aren't include in outout collection
         ///5. Set parent deck for each card in loaded decks
         ///</summary>
         ///<param name="pathOfFolderWithDecks">Absolute path of folder that contains decks (if it is empty, so reading from default folder)</param>
-        //public async static Task<Deck> ReadDeckFromDeckFolderWithFullPathAsync(string absolutePathOfFolderWithDecks)
-        //{
-        //   return await Task.Run(() => ReadDeckFromDeckFolderWithFullPath(absolutePathOfFolderWithDecks));
-        //}b
         public static List<Deck> GetDecksFromFolder(string absolutePathOfFolderWithDecks = "")
         {
             if (String.IsNullOrEmpty(absolutePathOfFolderWithDecks))
+            {
+                if (settings == null)
+                    CreateDefaultSettings();
                 absolutePathOfFolderWithDecks = settings.AbsolutePathOfSaveDeckFolder;
+
+            }
             if (!Directory.Exists(settings.AbsolutePathOfSaveDeckFolder))
                 Directory.CreateDirectory(settings.AbsolutePathOfSaveDeckFolder);
             List<Deck> output = new List<Deck>();
@@ -68,12 +70,21 @@ namespace Leitner_System_Transfered_2.Model
                 output = ReadAndConvertOldDecksToNewFormat(absolutePathOfFolderWithDecks);
             return output;
         }
+        /// <summary>
+        /// Read decks of old format from folder with decks and returns list of converted Deck
+        /// </summary>
+        /// <param name="absolutePathOfFolderWithDecks"></param>
+        /// <returns></returns>
         public static List<Deck> ReadAndConvertOldDecksToNewFormat(string absolutePathOfFolderWithDecks = "")
         {
             if (String.IsNullOrEmpty(absolutePathOfFolderWithDecks))
+            {
+                if (settings == null)
+                    CreateDefaultSettings();
                 absolutePathOfFolderWithDecks = settings.AbsolutePathOfSaveDeckFolder;
-            if (!Directory.Exists(settings.AbsolutePathOfSaveDeckFolder))
-                Directory.CreateDirectory(settings.AbsolutePathOfSaveDeckFolder);
+                if (!Directory.Exists(settings.AbsolutePathOfSaveDeckFolder))
+                    Directory.CreateDirectory(settings.AbsolutePathOfSaveDeckFolder);
+            }
             List<Deck> output = new List<Deck>();
             if (!Directory.Exists(absolutePathOfFolderWithDecks))
             {
@@ -101,7 +112,6 @@ namespace Leitner_System_Transfered_2.Model
                         relativeQuestionImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderQuestionImagePath), true);
                     if (!String.IsNullOrEmpty(card.RelativeToDeckFolderAnswerImagePath))
                         relativeAnswerImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(Path.Combine(currentFolderWithDecksFullPath, deck.Name, card.RelativeToDeckFolderAnswerImagePath),false);
-                    //card.SetNewFields(card.Question, card.Answer, relativeQuestionImagePath, relativeAnswerImagePath);
                     card.RelativeToDeckFolderAnswerImagePath = relativeAnswerImagePath;
                     card.RelativeToDeckFolderQuestionImagePath = relativeQuestionImagePath;
                 }
@@ -109,6 +119,11 @@ namespace Leitner_System_Transfered_2.Model
             }
             return output;
         }
+        /// <summary>
+        /// Read deck specified by full pass of folder with deck. If reading was nor sucessfull returns null 
+        /// </summary>
+        /// <param name="absolutePathOfFolderWithDecks"></param>
+        /// <returns></returns>
         private static Deck ReadOldDeckFromDeckFolderWithFullPath(string absolutePathOfFolderWithDecks)
         {
             Deck readingDeck = null;
@@ -148,12 +163,20 @@ namespace Leitner_System_Transfered_2.Model
             }
             return readingDeck;
         }
+        /// <summary>
+        /// Returns true if file is xml format
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         private static bool CheckIfTheFileIsXml(string filePath)
         {
             if (filePath.Contains("xml"))
                 return true;
             return false;
         }
+        /// <summary>
+        /// Create defaul settings and save them at default location
+        /// </summary>
         private static void CreateDefaultSettings()
         {
             SettingsModel defaultSettings = new SettingsModel();
@@ -166,6 +189,10 @@ namespace Leitner_System_Transfered_2.Model
             settings.TrainingTemplates.Add(settings.GetDefaultTrainingTemplate());
             SaveSettings();
         }
+        /// <summary>
+        /// Read settings from specified path
+        /// </summary>
+        /// <param name="path"></param>
         private static void ReadExistingSettings(string path)
         {
             readingSettings = true;
@@ -190,19 +217,25 @@ namespace Leitner_System_Transfered_2.Model
             }
             readingSettings = false;
         }
+        /// <summary>
+        /// Read existing settings or create new default one
+        /// </summary>
         public static void UploadSettings()
         {
-            string path = Path.Combine(Environment.CurrentDirectory, "settings.xml");
+            string path = defaultSettingPath;
             if (!File.Exists(path))
                 CreateDefaultSettings();
             else
                 ReadExistingSettings(path);
         }
+        /// <summary>
+        /// Save settings in default location
+        /// </summary>
         public static void SaveSettings()
         {
             if (settings == null||readingSettings)
                 return;
-            string path = Path.Combine(Environment.CurrentDirectory, "settings.xml");
+            string path = defaultSettingPath;
             if (String.IsNullOrEmpty(settings.AbsolutePathOfBackupFolder))
                 settings.AbsolutePathOfBackupFolder = defaultBackupFolder;
             if (String.IsNullOrEmpty(settings.AbsolutePathOfSaveDeckFolder))
@@ -221,10 +254,10 @@ namespace Leitner_System_Transfered_2.Model
             }
         }
         ///<summary>
-        ///Return deck from folder by its absolute path, if the process was faild return null
+        ///Return deck by its absolute path, if the process was faild return null
         ///</summary>
         ///<param name="pathOfFolderWithDecks">Absolute path of folder that contains decks</param>
-        private static Deck ReadDeckFromDeckFolderWithFullPath(string absolutePathOfDeckFile)
+        private static Deck ReadDeckByFullPath(string absolutePathOfDeckFile)
         {
             Deck readingDeck = null;
             if (!File.Exists(absolutePathOfDeckFile))
@@ -251,10 +284,11 @@ namespace Leitner_System_Transfered_2.Model
             }
             return readingDeck;
         }
-        //public static async Task ExportExcelFileAsync(string absoluteFilePath, Dictionary<string, string> input)
-        //{
-        //    await Task.Run(() => ExportExcelFile(absoluteFilePath, input));
-        //}
+        /// <summary>
+        /// Export Dictionary of queston-answer paors as excel file 
+        /// </summary>
+        /// <param name="absoluteFilePath"></param>
+        /// <param name="input"></param>
         public static void ExportExcelFile(string absoluteFilePath, Dictionary<string,string> input)
         {
             if (String.IsNullOrEmpty(absoluteFilePath))
@@ -282,10 +316,11 @@ namespace Leitner_System_Transfered_2.Model
 
             }
         }
-        //public static async Task<Dictionary<string, string>> ImportExcelFileAsync(string absoluteFilePath)
-        //{
-        //    return await Task.Run(() => ImportExcelFile(absoluteFilePath));
-        //}
+        /// <summary>
+        /// Import Dictionary of queston-answer pairs from excel file 
+        /// </summary>
+        /// <param name="absoluteFilePath"></param>
+        /// <returns></returns>
         public static Dictionary<string, string> ImportExcelFile(string absoluteFilePath)
         {
             if (String.IsNullOrEmpty(absoluteFilePath))
@@ -358,10 +393,7 @@ namespace Leitner_System_Transfered_2.Model
             }
             return (prefix + " " + i.ToString());
         }
-        //public static async Task<bool> SaveDeckOrUpdateDeckFileAsync(Deck deck, string absolutePathOfFolderWithDecks = "")
-        //{
-        //    return await Task.Run(() => SaveDeckOrUpdateDeckFile(deck, absolutePathOfFolderWithDecks));
-        //}
+        
         ///<summary>
         ///If deck folder doesn't exist create new one, if it already exists presaved file, then remove old deck file from folder, after that rename new deck file in this folder by the name of old file. 
         ///Return true if the process was sucessful and false in oposite case.
@@ -374,10 +406,10 @@ namespace Leitner_System_Transfered_2.Model
             string oldDeckFileFullPath = "";
             string absolutePathOfFolderWithDecks = currentFolderWithDecksFullPath;
             bool automaticalSavingToCurrentDeckFolder = false;
+            
             if (String.IsNullOrEmpty(fullDeckFilePath))
             {
                 automaticalSavingToCurrentDeckFolder = true;
-                //string fullDeckFilePath = Path.Combine(absolutePathOfFolderWithDecks, deck.Name);
                 if (!Directory.Exists(absolutePathOfFolderWithDecks))
                     Directory.CreateDirectory(absolutePathOfFolderWithDecks);
                 decksDirectoryFileNames = Directory.GetFiles(absolutePathOfFolderWithDecks);
@@ -389,7 +421,16 @@ namespace Leitner_System_Transfered_2.Model
                 }
                 fullDeckFilePath= Path.Combine(absolutePathOfFolderWithDecks, deck.Name + "_presaved.xml");
             }
+            else
+            {
+                if (File.Exists(fullDeckFilePath))
+                {
+                    MessageBox.Show("The same deck " + fullDeckFilePath + " has already exists try to rename this deck and repeat saving again");
+                    return false;
+                }
+            }
             //string fullDeckFilePath = Path.Combine(absolutePathOfFolderWithDecks, deck.Name + "_presaved.xml");
+
             try
             {
                 using (FileStream fs = new FileStream(fullDeckFilePath, FileMode.Create))
@@ -429,9 +470,6 @@ namespace Leitner_System_Transfered_2.Model
                 i++;
                 path = Path.Combine(settings.AbsolutePathOfBackupFolder, "Backup" + i.ToString());
             }
-            //}
-            //folderForCurrentBackupPath = path;
-            //Directory.CreateDirectory(folderForCurrentBackupPath);
             foreach (Deck deck in decksToBackup)
             {
                 string pathToSave = Path.Combine(path, deck.Name + ".xml");
@@ -486,7 +524,7 @@ namespace Leitner_System_Transfered_2.Model
             return true;
         }
         ///<summary>
-        ///Remove deck from current folder with decks
+        ///Remove deck from current folder with decks and all files which are related to this deck
         ///</summary>
         ///<param name="deckToDelete">Deck that will be delate</param>
         public static void DeleteDeckFromCurrentFolder(Deck deckToDelete)
@@ -506,7 +544,7 @@ namespace Leitner_System_Transfered_2.Model
             File.Delete(path);
         }
         ///<summary>
-        ///Copy image files from it's locations to deck folder if they were
+        ///Copy image files from it's locations to deck folder if they are differnet from images that are related to card it replace them and return new names of images and convert them to byte array which is assignedto appropriatefield inside Card class
         ///</summary>
         ///<param name="currentCard">current card to save</param>
         public static void CopyNewImagesToDeckFolder(Card currentCard, string questionAbsoluteImagePath, string answerAbsoluteImagePath, out string relativeAnswerImagePath, out string relativeQuestionImagePath)
@@ -520,7 +558,11 @@ namespace Leitner_System_Transfered_2.Model
                 if (File.Exists(oldQuestionImageAbsolitePath))
                     File.Delete(oldQuestionImageAbsolitePath);
                 if (!String.IsNullOrEmpty(questionAbsoluteImagePath))
+                {
                     relativeQuestionImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(questionAbsoluteImagePath, true);
+                    currentCard.QuestionImageByte = ByteFromImageFile(questionAbsoluteImagePath);
+                }
+                    
             }
             else
                 relativeQuestionImagePath = currentCard.RelativeToDeckFolderQuestionImagePath;
@@ -529,7 +571,11 @@ namespace Leitner_System_Transfered_2.Model
                 if (File.Exists(oldAnswerImageAbsolitePath))
                     File.Delete(oldAnswerImageAbsolitePath);
                 if (!String.IsNullOrEmpty(answerAbsoluteImagePath))
+                {
                     relativeAnswerImagePath = CopyImageFileToFolderWithDecksAndReturnRelativeToDeckFolderPath(answerAbsoluteImagePath, false);
+                    currentCard.AnswerImageByte = ByteFromImageFile(answerAbsoluteImagePath);
+                }
+                    
             }
             else
                 relativeAnswerImagePath = currentCard.RelativeToDeckFolderAnswerImagePath;
@@ -553,6 +599,11 @@ namespace Leitner_System_Transfered_2.Model
             File.Copy(absolutePathOfImageToCopy, Path.Combine(currentFolderWithDecksFullPath, relativeToDeckFolderFilePath + i.ToString()));
             return relativeToDeckFolderFilePath + i.ToString();
         }
+       /// <summary>
+       /// Create BitmapImage fromimage file specified by pass. If process was failed it creates default image
+       /// </summary>
+       /// <param name="path"></param>
+       /// <returns></returns>
         public static BitmapImage CreateImageWithFullPath(string path)
         {
             if (String.IsNullOrEmpty(path) || !File.Exists(path))
@@ -570,28 +621,53 @@ namespace Leitner_System_Transfered_2.Model
             }
             catch
             {
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                string pathOfReservedImage = Path.Combine(Environment.CurrentDirectory, "Assets\\imageUploadingIsNotSucesful.jpg");
-                Stream stream = File.OpenRead(pathOfReservedImage);
-                bitmap.StreamSource = stream;
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.EndInit();
-                stream.Close();
-                return bitmap;
+                return CreateDefaultImage();
             }
         }
+        /// <summary>
+        /// Creates default BitmapImage
+        /// </summary>
+        /// <returns></returns>
+        private static BitmapImage CreateDefaultImage()
+        {
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            string pathOfReservedImage = Path.Combine(Environment.CurrentDirectory, "Assets\\imageUploadingIsNotSucesful.jpg");
+            Stream stream = File.OpenRead(pathOfReservedImage);
+            bitmap.StreamSource = stream;
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.EndInit();
+            stream.Close();
+            return bitmap;
+        }
+        /// <summary>
+        /// Create image from byte array. If process was not sucessful it returns default image
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         public static BitmapImage ImageFromByteArray(Byte[] bytes)
         {
             if (bytes == null || bytes.Length == 0)
                 return null;
             MemoryStream stream = new MemoryStream(bytes);
             BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.StreamSource = stream;
-            image.EndInit();
+            try
+            {
+                image.BeginInit();
+                image.StreamSource = stream;
+                image.EndInit();
+            }
+            catch
+            {
+                return CreateDefaultImage();
+            }
             return image;
         }
+        /// <summary>
+        /// Converts BitmapImage to Bitmap
+        /// </summary>
+        /// <param name="bitmapImage"></param>
+        /// <returns></returns>
         public static Bitmap BitmapImageToBitmap(BitmapImage bitmapImage)
         {
             // BitmapImage bitmapImage = new BitmapImage(new Uri("../Images/test.png", UriKind.Relative));
@@ -604,6 +680,11 @@ namespace Leitner_System_Transfered_2.Model
                 return new Bitmap(bitmap);
             }
         }
+        /// <summary>
+        /// Return byte array from image file.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public static byte[] ByteFromImageFile(string filePath)
         {
             if (String.IsNullOrEmpty(filePath) || !File.Exists(filePath))
@@ -611,24 +692,37 @@ namespace Leitner_System_Transfered_2.Model
             BitmapImage image = FileManager.CreateImageWithFullPath(filePath);
             Bitmap bitmap = BitmapImageToBitmap(image);
             ImageConverter converter = new ImageConverter();
-            //        //byte[] array;
-            return (byte[])converter.ConvertTo(bitmap, typeof(byte[]));
+            try
+            {
+                byte[] output = (byte[])converter.ConvertTo(bitmap, typeof(byte[]));
+                return output;
+            }
+            catch
+            {
+                return new byte[0];
+            }
         }
         public static void CompressDeck(Deck deck)
         {
             foreach(Card card in deck.Cards)
             {
-                string absoluetPathOfQuestionImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
-                string absoluetPathOfAnswerImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
+                if (card.QuestionImageByte == null)
+                {
+                    string absoluetPathOfQuestionImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
+                    byte[] questionImageByte = ByteFromImageFile(absoluetPathOfQuestionImage);
+                    card.QuestionImageByte = questionImageByte;
+                    card.RelativeToDeckFolderQuestionImagePath = "";
+                }
+                if (card.AnswerImageByte == null)
+                {
+                    string absoluetPathOfAnswerImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
+                    byte[] answerImageByte = ByteFromImageFile(absoluetPathOfAnswerImage);
+                    card.AnswerImageByte = answerImageByte;
+                    card.RelativeToDeckFolderAnswerImagePath = "";
+                }
+                //string absoluetPathOfQuestionImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
                 
-                //BitmapImage questionImage = CreateImageWithFullPath(absoluetPathOfQuestionImage);
-                //BitmapImage answerImage = CreateImageWithFullPath(absoluetPathOfAnswerImage);
-                byte[] questionImageByte = ByteFromImageFile(absoluetPathOfQuestionImage);
-                byte[] answerImageByte = ByteFromImageFile(absoluetPathOfAnswerImage);
-                card.QuestionImageByte = questionImageByte;
-                card.AnswerImageByte = answerImageByte;
-                card.RelativeToDeckFolderAnswerImagePath = "";
-                card.RelativeToDeckFolderQuestionImagePath = "";
+                
             }
             //SaveDeckOrUpdateDeckFile(deck, pathOfFile);
         }
@@ -638,26 +732,37 @@ namespace Leitner_System_Transfered_2.Model
         }
         public static Deck DecompressDeck(string absoluteFilePath)
         {
+            
             Deck decompressingDeck = ReadDeckFromDeckFolderWithFullPath(absoluteFilePath);
             if (!decompressingDeck.Compressed)
                 return decompressingDeck;
             foreach (Card card in decompressingDeck.Cards)
             {
-                //string absoluetPathOfQuestionImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
-                //string absoluetPathOfAnswerImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
                 BitmapImage questionImage;
                 if (card.QuestionImageByte != null)
+                {
                     questionImage = ImageFromByteArray(card.QuestionImageByte);
-
-                
-                byte[] questionImageByte = ByteFromImageFile(absoluetPathOfQuestionImage);
-                byte[] answerImageByte = ByteFromImageFile(absoluetPathOfAnswerImage);
-                card.QuestionImageByte = questionImageByte;
-                card.AnswerImageByte = answerImageByte;
-                card.RelativeToDeckFolderAnswerImagePath = "";
-                card.RelativeToDeckFolderQuestionImagePath = "";
+                    Bitmap bitmapQueston = BitmapImageToBitmap(questionImage);
+                    int i = 0;
+                    while (File.Exists(Path.Combine(currentFolderWithDecksFullPath, "question" + i.ToString())))
+                        i++;
+                    bitmapQueston.Save(Path.Combine(currentFolderWithDecksFullPath, "question" + i.ToString()));
+                    card.RelativeToDeckFolderQuestionImagePath = "question" + i.ToString();
+                }
+                BitmapImage answerImage;
+                if (card.AnswerImageByte != null)
+                {
+                    answerImage = ImageFromByteArray(card.AnswerImageByte);
+                    Bitmap bitmapAnswer = BitmapImageToBitmap(answerImage);
+                    int i = 0;
+                    while (File.Exists(Path.Combine(currentFolderWithDecksFullPath, "answer" + i.ToString())))
+                        i++;
+                    bitmapAnswer.Save(Path.Combine(currentFolderWithDecksFullPath, "answer" + i.ToString()));
+                    card.RelativeToDeckFolderAnswerImagePath = "answer" + i.ToString();
+                }
             }
-
+            decompressingDeck.Decompress();
+            return decompressingDeck;
         }
     }
 }

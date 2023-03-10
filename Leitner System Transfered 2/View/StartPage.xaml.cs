@@ -403,7 +403,8 @@ namespace Leitner_System_Transfered_2.View
                 return;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.ShowDialog();
-            viewModel.ImportExcelFileToCurrentDeck(openFileDialog.FileName);
+            //viewModel.ImportExcelFileToCurrentDeck(openFileDialog.FileName);
+            viewModel.DeompressDeckFromXmlFile(openFileDialog.FileName);
         }
 
         private void exportEacel_Click(object sender, RoutedEventArgs e)
@@ -417,7 +418,7 @@ namespace Leitner_System_Transfered_2.View
             saveFileDialog.DefaultExt = "xml";
             saveFileDialog.ShowDialog();
             //viewModel.ExportCurrentDeckToExcelFile(saveFileDialog.FileName);
-            viewModel.CompressCurrentDeckToExcelFile(saveFileDialog.FileName);
+            viewModel.CompressCurrentDeckToXmlFile(saveFileDialog.FileName);
         }
 
         private void chooseFolderButton_Click(object sender, RoutedEventArgs e)

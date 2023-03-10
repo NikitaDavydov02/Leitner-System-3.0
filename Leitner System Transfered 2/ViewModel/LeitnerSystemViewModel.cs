@@ -312,11 +312,21 @@ namespace Leitner_System_Transfered_2.ViewModel
                 return;
             DeckManager.ExportCurrentDeckInExcelFile(filePath);
         }
-        public void CompressCurrentDeckToExcelFile(string filePath)
+        public void CompressCurrentDeckToXmlFile(string filePath)
         {
             if (String.IsNullOrEmpty(filePath))
                 return;
             DeckManager.CompressCurrentDeck(filePath);
+        }
+        public void DeompressDeckFromXmlFile(string filePath)
+        {
+            if (String.IsNullOrEmpty(filePath))
+                return;
+            if (!CheckForUnsavedCardsDoWeContinue())
+                return;
+            
+            DeckManager.DecompressDeck(filePath);
+            ReloadDeckList();
         }
     }
   }

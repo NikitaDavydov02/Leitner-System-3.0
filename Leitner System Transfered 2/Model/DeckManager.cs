@@ -246,6 +246,12 @@ namespace Leitner_System_Transfered_2.Model
             FileManager.ExportExcelFile(absolutePath, exportContent);
 
         }
+        public static void DecompressDeck(string pathOfFile)
+        {
+           Deck decompressedDeck = FileManager.DecompressDeck(pathOfFile);
+           Decks.Add(decompressedDeck);
+           FileManager.SaveDeckOrUpdateDeckFile(decompressedDeck);
+        }
         public static void CompressCurrentDeck(string pathOfFile)
         {
             if (String.IsNullOrEmpty(pathOfFile))
@@ -264,6 +270,8 @@ namespace Leitner_System_Transfered_2.Model
                 newCard.Answer = card.Answer;
                 newCard.RelativeToDeckFolderAnswerImagePath = card.RelativeToDeckFolderAnswerImagePath;
                 newCard.RelativeToDeckFolderQuestionImagePath = card.RelativeToDeckFolderQuestionImagePath;
+                newCard.AnswerImageByte = card.AnswerImageByte;
+                newCard.QuestionImageByte = card.QuestionImageByte;
             }
             compressingDeck.Compress();
             FileManager.SaveDeckOrUpdateDeckFile(compressingDeck, pathOfFile);
