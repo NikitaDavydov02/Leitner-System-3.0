@@ -59,7 +59,7 @@ namespace Leitner_System_Transfered_2.Model
             {
                 if (!deckFileName.Contains(".xml"))
                     continue;
-                Deck deck = ReadDeckFromDeckFolderWithFullPath(deckFileName);
+                Deck deck = ReadDeckByFullPath(deckFileName);
                 if (deck != null)
                     output.Add(deck);
                 else
@@ -702,38 +702,29 @@ namespace Leitner_System_Transfered_2.Model
                 return new byte[0];
             }
         }
-        public static void CompressDeck(Deck deck)
-        {
-            foreach(Card card in deck.Cards)
-            {
-                if (card.QuestionImageByte == null)
-                {
-                    string absoluetPathOfQuestionImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
-                    byte[] questionImageByte = ByteFromImageFile(absoluetPathOfQuestionImage);
-                    card.QuestionImageByte = questionImageByte;
-                    card.RelativeToDeckFolderQuestionImagePath = "";
-                }
-                if (card.AnswerImageByte == null)
-                {
-                    string absoluetPathOfAnswerImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderAnswerImagePath);
-                    byte[] answerImageByte = ByteFromImageFile(absoluetPathOfAnswerImage);
-                    card.AnswerImageByte = answerImageByte;
-                    card.RelativeToDeckFolderAnswerImagePath = "";
-                }
-                //string absoluetPathOfQuestionImage = Path.Combine(currentFolderWithDecksFullPath, card.RelativeToDeckFolderQuestionImagePath);
-                
-                
-            }
-            //SaveDeckOrUpdateDeckFile(deck, pathOfFile);
-        }
+        /// <summary>
+        /// Returns absolutepath of image from relative
+        /// </summary>
+        /// <param name="relativePath"></param>
+        /// <returns></returns>
         public static string PathOfImage(string relativePath)
         {
             return Path.Combine(currentFolderWithDecksFullPath, relativePath);
         }
+        /// <summary>
+        /// Read deck and decompress it (create images in folder with decks from bite arrays) if it is compressed
+        /// </summary>
+        /// <param name="absoluteFilePath"></param>
+        /// <returns></returns>
         public static Deck DecompressDeck(string absoluteFilePath)
         {
             
-            Deck decompressingDeck = ReadDeckFromDeckFolderWithFullPath(absoluteFilePath);
+            Deck decompressingDeck = ReadDeckByFullPath(absoluteFilePath);
+            if(File.Exists(Path.Combine(currentFolderWithDecksFullPath, decompressingDeck.Name + ".xml")))
+            {
+                MessageBox.Show("Deck with thesame name as decompressing deck has already exists. Try to rename deck with name: " + decompressingDeck.Name + " and repeat again");
+                return null;
+            }
             if (!decompressingDeck.Compressed)
                 return decompressingDeck;
             foreach (Card card in decompressingDeck.Cards)

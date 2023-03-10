@@ -249,6 +249,8 @@ namespace Leitner_System_Transfered_2.Model
         public static void DecompressDeck(string pathOfFile)
         {
            Deck decompressedDeck = FileManager.DecompressDeck(pathOfFile);
+           if (decompressedDeck == null)
+                return;
            Decks.Add(decompressedDeck);
            FileManager.SaveDeckOrUpdateDeckFile(decompressedDeck);
         }

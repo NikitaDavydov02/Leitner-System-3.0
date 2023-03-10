@@ -89,15 +89,15 @@ namespace Leitner_System_Transfered_2.Model
                     string absoluetPathOfQuestionImage = FileManager.PathOfImage(card.RelativeToDeckFolderQuestionImagePath);
                     byte[] questionImageByte = FileManager.ByteFromImageFile(absoluetPathOfQuestionImage);
                     card.QuestionImageByte = questionImageByte;
-                    card.RelativeToDeckFolderQuestionImagePath = "";
                 }
                 if (card.AnswerImageByte == null)
                 {
                     string absoluetPathOfAnswerImage = FileManager.PathOfImage(card.RelativeToDeckFolderAnswerImagePath);
                     byte[] answerImageByte = FileManager.ByteFromImageFile(absoluetPathOfAnswerImage);
                     card.AnswerImageByte = answerImageByte;
-                    card.RelativeToDeckFolderAnswerImagePath = "";
                 }
+                card.RelativeToDeckFolderQuestionImagePath = "";
+                card.RelativeToDeckFolderAnswerImagePath = "";
             }
             Compressed = true;
         }
