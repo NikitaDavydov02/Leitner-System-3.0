@@ -217,6 +217,22 @@ namespace Leitner_System_Transfered_2.Model
             }
             readingSettings = false;
         }
+        private static string TryToFindPathOfSettingsFileFromPreviousVersions()
+        {
+            string CurrentVercionFoderPath = Environment.CurrentDirectory;
+            string rootFolder = Directory.GetParent(CurrentVercionFoderPath).FullName;
+            string[] versionFolders = Directory.GetDirectories(rootFolder);
+            foreach(string s in versionFolders)
+            {
+                if (Directory.Exists(s))
+                {
+                    string posiibleSettingsFilePath = Path.Combine(s, "settings.xml");
+                    if (File.Exists(posiibleSettingsFilePath))
+                        return posiibleSettingsFilePath;
+                }
+            }
+            return "";
+        }
         /// <summary>
         /// Read existing settings or create new default one
         /// </summary>
@@ -224,7 +240,28 @@ namespace Leitner_System_Transfered_2.Model
         {
             string path = defaultSettingPath;
             if (!File.Exists(path))
-                CreateDefaultSettings();
+            {
+                //Try to find settings from previous versions
+                string oldSettingsFilePath = "";
+                try
+                {
+                    oldSettingsFilePath = TryToFindPathOfSettingsFileFromPreviousVersions();
+                }
+                catch
+                {
+                    MessageBox.Show("We didn't find settings from previous versions ofprogram so we hadto create a new default settings");
+                    CreateDefaultSettings();
+                    return;
+                }
+                
+                if(String.IsNullOrEmpty(oldSettingsFilePath))
+                    CreateDefaultSettings();
+                else
+                {
+                    File.Copy(oldSettingsFilePath, path);
+                    ReadExistingSettings(path);
+                }
+            }
             else
                 ReadExistingSettings(path);
         }
