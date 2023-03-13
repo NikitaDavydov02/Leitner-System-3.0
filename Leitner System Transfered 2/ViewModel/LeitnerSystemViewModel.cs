@@ -37,6 +37,7 @@ namespace Leitner_System_Transfered_2.ViewModel
                 ReloadCardList();
             }
         }
+        public string Loading { get; private set; } = "Loading";
         //--------------------------------------------------------------------------------
         //------------------------------------- METHODS ---------------------------------
         //--------------------------------------------------------------------------------
@@ -50,6 +51,7 @@ namespace Leitner_System_Transfered_2.ViewModel
             DeckManager.Inicializer();
             ReloadDeckList();
             ReloadCardList();
+            FileManager.LoadingProgress += LoadingProfressHandler;
         }
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string propertyName)
@@ -76,12 +78,20 @@ namespace Leitner_System_Transfered_2.ViewModel
             OnPropertyChanged("CurrentCard");
             OnPropertyChanged("CurrentDeck");
         }
+        int i = 0;
+        private void LoadingProfressHandler(object sender,EventArgs args)
+        {
+            i++;
+            Loading = i.ToString();
+            OnPropertyChanged("Loading");
+        }
         /// <summary>
         /// [Optimozed] Update displaied card list from the model.CurrentDeck if it is possible
         /// </summary>
         /// 
         private bool ReloadCardList()
         {
+            OnPropertyChanged("Loading");
             //if (!CheckForUnsavedCardsDoWeContinue())
             //    return false;
             Cards.Clear();

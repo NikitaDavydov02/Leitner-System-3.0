@@ -63,6 +63,7 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
+            <TextBlock x:Name="LoadingText" Text="{Binding Loading, Mode=OneTime}" Foreground="White" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"/>
             <Button x:Name="SelectAll" Margin="15 2" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Content="Choose all" Click="SelectAll_Click" Style="{DynamicResource WhiteButtonWithText}" IsEnabled="{Binding Decks.Count, Converter={StaticResource integerToVisibilityConverter}}"/>
             <ComboBox x:Name="ReverseSetting" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" Margin="15 2" Style="{DynamicResource ComboBoxStyle1}" SelectionChanged="ReverseSetting_SelectionChanged" SelectedIndex="0" Grid.ColumnSpan="2">
                 <ComboBoxItem Content="Straight" FontSize="8" Style="{DynamicResource ComboBoxItemStyle1}"/>

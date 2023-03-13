@@ -789,9 +789,17 @@ namespace Leitner_System_Transfered_2.Model
                     bitmapAnswer.Save(Path.Combine(currentFolderWithDecksFullPath, "answer" + i.ToString()));
                     card.RelativeToDeckFolderAnswerImagePath = "answer" + i.ToString();
                 }
+                OnLoadingProgress();
             }
             decompressingDeck.Decompress();
             return decompressingDeck;
+        }
+        public static event EventHandler LoadingProgress;
+        public static void OnLoadingProgress()
+        {
+            EventHandler hanfler = LoadingProgress;
+            if (hanfler != null)
+                hanfler(0, new EventArgs());
         }
     }
 }
