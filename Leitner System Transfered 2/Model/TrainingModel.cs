@@ -23,7 +23,7 @@ namespace Leitner_System_Transfered_2.Model
         //--------------------------------------------------------------------------------
         //------------------------------------- PRIVATE PROPERTIES ---------------------------------
         //--------------------------------------------------------------------------------
-        private Dictionary<Card, bool> trainingCardsWithReverse;
+        private Dictionary<Card, ReverseSettings> trainingCardsWithReverse;
         //private Dictionary<Card, Deck> trainingCardsDictionary;
         private List<Card> trainingCards;
         private List<Deck> trainingDecks;
@@ -84,35 +84,35 @@ namespace Leitner_System_Transfered_2.Model
             }
             return inputList;
         }
-        private Dictionary<Card, bool> SelectCardsThatCanBeRepeated(Dictionary<Deck, ReverseSettings> trainingDecksWithReverse)
+        private Dictionary<Card, ReverseSettings> SelectCardsThatCanBeRepeated(Dictionary<Deck, ReverseSettings> trainingDecksWithReverse)
         {
-            Dictionary<Card, bool> cardsWithReverse = new Dictionary<Card, bool>();
+            Dictionary<Card, ReverseSettings> cardsWithReverse = new Dictionary<Card, ReverseSettings>();
             Random random = new Random();
             foreach (Deck deck in trainingDecksWithReverse.Keys.ToList())
                 foreach (Card card in deck.Cards)
                 {
                     if (trainingDecksWithReverse[deck] == ReverseSettings.Straight)
                     {
-                        if (card.CardIsAppropriateForTraining(true))
-                            cardsWithReverse.Add(card, false);
+                        if (card.CardIsAppropriateForTraining(ReverseSettings.Straight))
+                            cardsWithReverse.Add(card, ReverseSettings.Straight);
                     }
                     else if (trainingDecksWithReverse[deck] == ReverseSettings.Reverse)
                     {
-                        if (card.CardIsAppropriateForTraining(false))
-                            cardsWithReverse.Add(card, true);
+                        if (card.CardIsAppropriateForTraining(ReverseSettings.Reverse))
+                            cardsWithReverse.Add(card, ReverseSettings.Reverse);
                     }
                     else
                     {
                         int straightOrReverse = random.Next(2);
                         if (straightOrReverse == 0)
                         {
-                            if (card.CardIsAppropriateForTraining(true))
-                                cardsWithReverse.Add(card, false);
+                            if (card.CardIsAppropriateForTraining(ReverseSettings.Straight))
+                                cardsWithReverse.Add(card, ReverseSettings.Straight);
                         }
                         else
                         {
-                            if (card.CardIsAppropriateForTraining(false))
-                                cardsWithReverse.Add(card, true);
+                            if (card.CardIsAppropriateForTraining(ReverseSettings.Reverse))
+                                cardsWithReverse.Add(card, ReverseSettings.Reverse);
                         }
                     }
                 }
@@ -121,28 +121,33 @@ namespace Leitner_System_Transfered_2.Model
         /// <summary>
         /// Select appropriate training cards from training decks
         /// </summary>
-        private Dictionary<Card, bool> SelectTrainingCardsFromDeck(Dictionary<Deck, ReverseSettings> trainingDecksWithReverse)
+        private Dictionary<Card, ReverseSettings> SelectTrainingCardsFromDeck(Dictionary<Deck, ReverseSettings> trainingDecksWithReverse)
         {
             if (trainingDecksWithReverse == null)
                 return null;
-            Dictionary<Card, bool> cardsWithReverse = SelectCardsThatCanBeRepeated(trainingDecksWithReverse);
+            Dictionary<Card, ReverseSettings> cardsWithReverse = SelectCardsThatCanBeRepeated(trainingDecksWithReverse);
+            List<KeyValuePair<Card, int>> cardVsRepetitionTime = new List<KeyValuePair<Card, int>>();
+            foreach (Card card in cardsWithReverse.Keys.ToList())
+                cardVsRepetitionTime.Add(new KeyValuePair<Card, int>(card, card.DaysSinceCardSholdHaveBeenRepeated(cardsWithReverse[card])));
+            cardVsRepetitionTime.Sort((x, y) => y.Value.CompareTo(x.Value));
 
-            List<Card> sortedCards = new List<Card>();
+
+           /* List<Card> sortedCards = new List<Card>();
             foreach (Card card in cardsWithReverse.Keys.ToList())
                 sortedCards.Add(card);
-            SortCardsListByDaysSinceCardSholdHaveBeenRepeated(sortedCards, cardsWithReverse);
+            SortCardsListByDaysSinceCardSholdHaveBeenRepeated(sortedCards, cardsWithReverse);*/
 
             int numerOfCards = 0;
-            if (sortedCards.Count > maxTrainingCardsCount)
+            if (cardVsRepetitionTime.Count > maxTrainingCardsCount)
                 numerOfCards = maxTrainingCardsCount;
             else
-                numerOfCards = sortedCards.Count;
-            Dictionary<Card, bool> output = new Dictionary<Card, bool>();
+                numerOfCards = cardVsRepetitionTime.Count;
+            Dictionary<Card, ReverseSettings> output = new Dictionary<Card, ReverseSettings>();
             for (int i = 0; i < numerOfCards; i++)
-                output.Add(sortedCards[i], cardsWithReverse[sortedCards[i]]);
+                output.Add(cardVsRepetitionTime[i].Key, cardsWithReverse[cardVsRepetitionTime[i].Key]);
             return output;
         }
-        private void SortCardsListByDaysSinceCardSholdHaveBeenRepeated(List<Card> sortedCards, Dictionary<Card,bool> cardsWithReverse)
+       /* private void SortCardsListByDaysSinceCardSholdHaveBeenRepeated(List<Card> sortedCards, Dictionary<Card,bool> cardsWithReverse)
         {
             for (int i = 0; i < sortedCards.Count; i++)
                 for (int j = 0; j < sortedCards.Count - 1; j++)
@@ -156,7 +161,7 @@ namespace Leitner_System_Transfered_2.Model
                         sortedCards[j + 1] = copy;
                     }
                 }
-        }
+        }*/
         /// <summary>
         /// Update card repitition time on basis of answer, increase current card index. If it was the last card comlete the training, else - fire NextCard event
         /// </summary>
@@ -211,7 +216,7 @@ namespace Leitner_System_Transfered_2.Model
                     answer = false;
                 if (Results[card] == Result.NoAnswer)
                     continue;
-                if (!trainingCardsWithReverse[card])
+                if (trainingCardsWithReverse[card]==ReverseSettings.Straight)
                     card.UpdateLastRepitionTime(answer);
                 else
                     card.UpdateLastReverseRepitionTime(answer);
@@ -263,8 +268,8 @@ namespace Leitner_System_Transfered_2.Model
     class NextCardEventArgs : EventArgs
     {
         public Card Card { get; private set; }
-        public bool StraightOrReverse { get; private set; }
-        public NextCardEventArgs(Card card, bool straightOrReverse)
+        public ReverseSettings StraightOrReverse { get; private set; }
+        public NextCardEventArgs(Card card, ReverseSettings straightOrReverse)
         {
             Card = card;
             StraightOrReverse = straightOrReverse;

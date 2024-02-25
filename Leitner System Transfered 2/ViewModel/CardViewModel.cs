@@ -99,16 +99,16 @@ namespace Leitner_System_Transfered_2.ViewModel
         //--------------------------------------------------------------------------------
         //------------------------------------- METHODS ---------------------------------
         //--------------------------------------------------------------------------------
-        public CardViewModel(Card card, bool straightOrReverse = false)
+        public CardViewModel(Card card, ReverseSettings reverseSettings = ReverseSettings.Straight)
         {
-            MakeCardViewModelFromCardModel(card, straightOrReverse);
+            MakeCardViewModelFromCardModel(card, reverseSettings);
         }
-        private void MakeCardViewModelFromCardModel(Card card, bool straightOrReverse = false)
+        private void MakeCardViewModelFromCardModel(Card card, ReverseSettings reverseSettings = ReverseSettings.Straight)
         {
             this.Card = card;
             this.straightOrReverse = straightOrReverse;
 
-            if (!straightOrReverse)
+            if (reverseSettings==ReverseSettings.Straight)
             {
                 Question = card.Question;
                 Answer = card.Answer;
@@ -141,8 +141,12 @@ namespace Leitner_System_Transfered_2.ViewModel
                 DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Question }, new List<string>() { Answer }, new List<string>() { AbsoluteQuestionImagePath }, new List<string>() { AbsoluteAnswerImagePath });
             else
                 DeckManager.SaveCards(new List<Card>() { Card }, new List<string>() { Answer }, new List<string>() { Question }, new List<string>() { AbsoluteAnswerImagePath }, new List<string>() { AbsoluteQuestionImagePath });
-
-            MakeCardViewModelFromCardModel(Card, straightOrReverse);
+            ReverseSettings reverseSettings;
+            if (!straightOrReverse)
+                reverseSettings = ReverseSettings.Straight;
+            else
+                reverseSettings = ReverseSettings.Reverse;
+            MakeCardViewModelFromCardModel(Card, reverseSettings);
         }
         public override string ToString()
         {
@@ -171,7 +175,12 @@ namespace Leitner_System_Transfered_2.ViewModel
         }
         public void DontSaveCurrentCard()
         {
-            MakeCardViewModelFromCardModel(Card, straightOrReverse);
+            ReverseSettings reverseSettings;
+            if (!straightOrReverse)
+                reverseSettings = ReverseSettings.Straight;
+            else
+                reverseSettings = ReverseSettings.Reverse;
+            MakeCardViewModelFromCardModel(Card, reverseSettings);
         }
     }
 }

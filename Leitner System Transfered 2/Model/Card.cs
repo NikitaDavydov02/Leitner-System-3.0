@@ -103,10 +103,10 @@ namespace Leitner_System_Transfered_2.Model
         {
             return Question;
         }
-        public int DaysSinceCardSholdHaveBeenRepeated(bool straightRepititition)
+        public int DaysSinceCardSholdHaveBeenRepeated(ReverseSettings straightRepititition)
         {
             int daysSinceCardSholdHaveBeenRepeated = -1;
-            if (straightRepititition)
+            if (straightRepititition==ReverseSettings.Straight)
             {
                 TimeSpan span = DateTime.Now - LastRepetitionTime;
                 if (RepitionFrequensy == RepitionFrequensy.Daily && (span.Days >= 1 || (span.Days == 0 && span.Hours >= 0)))
@@ -144,7 +144,7 @@ namespace Leitner_System_Transfered_2.Model
             }
             return daysSinceCardSholdHaveBeenRepeated;
         }
-        public bool CardIsAppropriateForTraining(bool straight)
+        public bool CardIsAppropriateForTraining(ReverseSettings straight)
         {
             if(DaysSinceCardSholdHaveBeenRepeated(straight)>=0)
                 return true;
